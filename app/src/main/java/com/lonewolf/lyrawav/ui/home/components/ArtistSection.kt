@@ -22,7 +22,7 @@ import com.lonewolf.lyrawav.ui.theme.Poppins
 
 @Composable
 fun ArtistCard(name: String, onClick: () -> Unit) {
-    // Card individual do artista
+    // Card individual
     Column(
         modifier = Modifier
             .width(80.dp)
@@ -54,7 +54,7 @@ fun ArtistCard(name: String, onClick: () -> Unit) {
 
 @Composable
 fun ArtistSection() {
-    // Lista horizontal de artistas favoritos
+    // Lista de artistas
     Column(modifier = Modifier.fillMaxWidth()) {
         SectionTitle(text = "Seus artistas favoritos")
 

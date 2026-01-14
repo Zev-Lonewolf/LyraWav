@@ -24,13 +24,13 @@ fun RecentCard(
     subtitle: String,
     onClick: () -> Unit
 ) {
-    // Card individual de Álbum/Playlist
+    // Card individual
     Column(
         modifier = Modifier
             .width(140.dp)
             .clickable { onClick() }
     ) {
-        // Capa quadrada
+        // Capa
         Box(
             modifier = Modifier
                 .size(140.dp)
@@ -40,7 +40,7 @@ fun RecentCard(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Título em destaque
+        // Título
         Text(
             text = title,
             style = MaterialTheme.typography.bodyMedium.copy(
@@ -53,7 +53,7 @@ fun RecentCard(
             overflow = TextOverflow.Ellipsis
         )
 
-        // Artista ou Descrição
+        // Subtítulo
         Text(
             text = subtitle,
             style = MaterialTheme.typography.bodySmall.copy(
@@ -70,7 +70,7 @@ fun RecentCard(
 
 @Composable
 fun RecentSection() {
-    // Seção horizontal de itens recentes
+    // Seção de recentes
     Column(modifier = Modifier.fillMaxWidth()) {
         SectionTitle(text = "Tocados recentemente")
 

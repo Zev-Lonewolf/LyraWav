@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 fun FastMusicGrid() {
     val context = LocalContext.current
 
-    // Grade horizontal de 4 linhas
+    // Grade de músicas
     LazyHorizontalGrid(
         rows = GridCells.Fixed(4),
         modifier = Modifier
@@ -42,6 +42,7 @@ fun FastMusicGrid() {
 
 @Composable
 fun FastMusicCard(onClick: () -> Unit) {
+    // Card individual
     Row(
         modifier = Modifier
             .width(260.dp)
@@ -50,7 +51,7 @@ fun FastMusicCard(onClick: () -> Unit) {
             .clickable { onClick() },
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Capa da música
+        // Capa
         Box(
             modifier = Modifier
                 .size(40.dp)
@@ -59,7 +60,7 @@ fun FastMusicCard(onClick: () -> Unit) {
 
         Spacer(modifier = Modifier.width(10.dp))
 
-        // Título e Artista (Placeholders)
+        // Info da música
         Column(modifier = Modifier.weight(1f)) {
             Box(
                 modifier = Modifier
@@ -76,7 +77,7 @@ fun FastMusicCard(onClick: () -> Unit) {
             )
         }
 
-        // Menu de opções
+        // Menu
         Icon(
             imageVector = Icons.Default.MoreVert,
             contentDescription = null,

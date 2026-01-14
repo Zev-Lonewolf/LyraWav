@@ -1,5 +1,4 @@
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -30,12 +29,12 @@ fun HomeHeader() {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        // Logo LyraWav
+        // Logo
         Text(
             text = buildAnnotatedString {
                 withStyle(
                     style = SpanStyle(
-                        color = Color(0xFF00BFA5),
+                        color = Color((0xFF00E5FF)),
                         fontWeight = FontWeight.ExtraBold
                     )
                 ) {
@@ -55,7 +54,7 @@ fun HomeHeader() {
             letterSpacing = (-0.5).sp
         )
 
-        // Botão de Perfil
+        // Botão de perfil
         Box(
             modifier = Modifier
                 .size(35.dp)

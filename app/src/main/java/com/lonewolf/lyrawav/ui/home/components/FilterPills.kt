@@ -1,7 +1,6 @@
 package com.lonewolf.lyrawav.ui.home.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -22,7 +21,7 @@ fun FilterPills() {
     val filters = listOf("Foco", "Treino", "No Carro", "Relaxar", "Festa", "Viagem")
     var selectedFilter by remember { mutableStateOf("") }
 
-    // Linha horizontal de filtros (Moods)
+    // Lista de filtros
     LazyRow(
         modifier = Modifier.fillMaxWidth(),
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
@@ -31,6 +30,7 @@ fun FilterPills() {
         items(filters) { filter ->
             val isSelected = selectedFilter == filter
 
+            // Pill individual
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(20.dp))

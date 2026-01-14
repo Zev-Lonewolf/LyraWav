@@ -23,14 +23,14 @@ import com.lonewolf.lyrawav.ui.theme.Poppins
 
 @Composable
 fun FloatingNavBar() {
-    // Container para posicionar a barra no rodapé
+    // Barra de navegação flutuante
     Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(bottom = 20.dp),
         contentAlignment = Alignment.BottomCenter
     ) {
-        // Barra em formato de pílula com transparência adaptativa
+        // Container da barra
         Row(
             modifier = Modifier
                 .fillMaxWidth(0.85f)
@@ -55,12 +55,12 @@ fun FloatingNavBar() {
 
 @Composable
 fun NavIcon(icon: ImageVector, label: String, isSelected: Boolean) {
-    // Ícone individual da barra de navegação
+    // Ícone individual
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .clip(RoundedCornerShape(12.dp))
-            .clickable { /* Futura Navegação */ }
+            .clickable { /* Navegação */ }
             .padding(4.dp)
     ) {
         Icon(

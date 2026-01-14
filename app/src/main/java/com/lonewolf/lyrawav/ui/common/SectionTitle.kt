@@ -12,7 +12,7 @@ import com.lonewolf.lyrawav.ui.theme.Poppins
 
 @Composable
 fun SectionTitle(text: String) {
-    // Título das seções (Escolhas rápidas, Recentemente, etc)
+    // Título da seção
     Text(
         text = text,
         style = MaterialTheme.typography.titleLarge.copy(

@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 fun FastMusicRow() {
     val context = LocalContext.current
 
-    // Linha horizontal de escolhas rápidas (estilo pílula)
+    // Lista de escolhas rápidas
     LazyRow(
         contentPadding = PaddingValues(horizontal = 16.dp),
         horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(12.dp)
@@ -34,7 +34,7 @@ fun FastMusicRow() {
 
 @Composable
 fun FastChoiceCard(onClick: () -> Unit) {
-    // Card individual da linha horizontal
+    // Card individual
     Box(
         modifier = Modifier
             .width(160.dp)
