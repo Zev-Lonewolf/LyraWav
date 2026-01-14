@@ -8,12 +8,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.lonewolf.lyrawav.R
 
+// Definição da fonte Poppins
 val Poppins = FontFamily(
     Font(R.font.poppins_regular, FontWeight.Normal),
     Font(R.font.poppins_bold, FontWeight.Bold),
     Font(R.font.poppins_semibold, FontWeight.SemiBold)
 )
 
+// Configuração de tipografia do sistema
 val AppTypography = Typography(
     bodyLarge = TextStyle(
         fontFamily = Poppins,

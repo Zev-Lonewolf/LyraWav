@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lonewolf.lyrawav.ui.theme.Poppins
 
+// Lógica para saudação baseada na hora
 fun getWelcomeMessage(userName: String?): String {
     val calendar = Calendar.getInstance()
     val hour = calendar.get(Calendar.HOUR_OF_DAY)
@@ -28,6 +29,7 @@ fun getWelcomeMessage(userName: String?): String {
 fun GreetingSection(userName: String?) {
     val welcomeText = getWelcomeMessage(userName)
 
+    // Bloco de boas-vindas e subtítulo
     Column(
         modifier = Modifier
             .fillMaxWidth()

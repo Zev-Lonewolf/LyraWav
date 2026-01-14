@@ -1,8 +1,10 @@
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -16,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.lonewolf.lyrawav.ui.theme.Poppins
 
 @Composable
 fun HomeHeader() {
@@ -23,10 +26,11 @@ fun HomeHeader() {
         modifier = Modifier
             .fillMaxWidth()
             .statusBarsPadding()
-            .padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 12.dp),
+            .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
+        // Logo LyraWav
         Text(
             text = buildAnnotatedString {
                 withStyle(
@@ -46,21 +50,27 @@ fun HomeHeader() {
                     append("Wav")
                 }
             },
+            fontFamily = Poppins,
             fontSize = 24.sp,
             letterSpacing = (-0.5).sp
         )
 
+        // Botão de Perfil
         Box(
             modifier = Modifier
-                .size(36.dp)
-                .border(1.5.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f), CircleShape),
+                .size(35.dp)
+                .background(
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
+                    shape = CircleShape
+                )
+                .clickable { /* Abrir Perfil */ },
             contentAlignment = Alignment.Center
         ) {
             Icon(
-                imageVector = Icons.Default.AccountCircle,
+                imageVector = Icons.Default.Person,
                 contentDescription = "Perfil",
                 tint = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.size(28.dp)
+                modifier = Modifier.size(20.dp)
             )
         }
     }
