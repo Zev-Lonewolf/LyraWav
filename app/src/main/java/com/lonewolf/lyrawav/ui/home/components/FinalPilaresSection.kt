@@ -26,46 +26,63 @@ import com.lonewolf.lyrawav.ui.common.SectionTitle
 import com.lonewolf.lyrawav.ui.theme.Poppins
 
 @Composable
-fun FinalPilaresSection() {
-    // Seções finais (IA, Podcasts e Lives)
-    Column(modifier = Modifier.fillMaxWidth().padding(bottom = 110.dp)) {
+fun FinalPilaresSection(onItemClick: (String) -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 110.dp)
+    ) {
         SectionTitle(text = stringResource(R.string.section_title_lyra_ia))
-        RadioIACard()
+        RadioIACard(onItemClick)
 
         Spacer(modifier = Modifier.height(24.dp))
         SectionTitle(text = stringResource(R.string.section_title_podcasts))
-        PodcastsRow()
+        PodcastsRow(onItemClick)
 
         Spacer(modifier = Modifier.height(24.dp))
         SectionTitle(text = stringResource(R.string.section_title_lives))
-        LivesRow()
+        LivesRow(onItemClick)
     }
 }
 
 @Composable
-fun RadioIACard() {
-    // Card de Rádio IA
+fun RadioIACard(onItemClick: (String) -> Unit) {
+    val title = stringResource(R.string.ia_radio_title)
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
             .height(115.dp)
             .clip(RoundedCornerShape(20.dp))
-            .background(Brush.linearGradient(listOf(Color(0xFF1A237E), Color(0xFF4A148C), Color(0xFF880E4F))))
-            .clickable { }
+            .background(
+                Brush.linearGradient(
+                    listOf(
+                        Color(0xFF1A237E),
+                        Color(0xFF4A148C),
+                        Color(0xFF880E4F)
+                    )
+                )
+            )
+            .clickable { onItemClick(title) }
             .padding(20.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(Icons.Default.GraphicEq, null, modifier = Modifier.size(42.dp), tint = Color.White)
+            Icon(
+                Icons.Default.GraphicEq,
+                contentDescription = null,
+                modifier = Modifier.size(42.dp),
+                tint = Color.White
+            )
 
             Spacer(Modifier.width(16.dp))
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = stringResource(R.string.ia_radio_title),
+                    text = title,
                     color = Color.White,
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Bold,
@@ -83,44 +100,60 @@ fun RadioIACard() {
             }
         }
 
-        // Badge
         Surface(
-            color = Color.Red,
+            color = MaterialTheme.colorScheme.error,
             shape = RoundedCornerShape(4.dp),
             modifier = Modifier.align(Alignment.TopEnd)
         ) {
             Text(
                 text = stringResource(R.string.badge_live_now),
                 modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-                color = Color.White,
+                color = MaterialTheme.colorScheme.onError,
                 fontSize = 9.sp,
-                fontWeight = FontWeight.Bold
+                fontFamily = Poppins,
+                fontWeight = FontWeight.ExtraBold
             )
         }
     }
 }
 
 @Composable
-fun PodcastsRow() {
-    // Lista de podcasts
+fun PodcastsRow(onItemClick: (String) -> Unit) {
     LazyRow(
         contentPadding = PaddingValues(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         items(5) { index ->
-            Box(
+            val podName = stringResource(R.string.placeholder_podcast, index + 1)
+
+            Column(
                 modifier = Modifier
-                    .size(130.dp)
+                    .width(130.dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .background(Color.LightGray)
-                    .clickable { },
-                contentAlignment = Alignment.Center
+                    .clickable { onItemClick(podName) }
             ) {
+                Box(
+                    modifier = Modifier
+                        .size(130.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(MaterialTheme.colorScheme.secondaryContainer),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.GraphicEq,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.1f),
+                        modifier = Modifier.size(40.dp)
+                    )
+                }
+
                 Text(
-                    text = stringResource(R.string.placeholder_podcast, index + 1),
+                    text = podName,
                     color = MaterialTheme.colorScheme.onBackground,
                     fontSize = 12.sp,
-                    fontFamily = Poppins
+                    fontFamily = Poppins,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.padding(top = 8.dp, start = 4.dp)
                 )
             }
         }
@@ -128,26 +161,40 @@ fun PodcastsRow() {
 }
 
 @Composable
-fun LivesRow() {
-    // Lista de lives
+fun LivesRow(onItemClick: (String) -> Unit) {
     LazyRow(
         contentPadding = PaddingValues(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         items(5) { index ->
-            Column(Modifier.width(150.dp)) {
+            val liveName = stringResource(R.string.placeholder_live, index + 1)
+
+            Column(
+                modifier = Modifier
+                    .width(150.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .clickable { onItemClick(liveName) }
+            ) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(85.dp)
                         .clip(RoundedCornerShape(12.dp))
-                        .background(Color.LightGray)
-                )
+                        .background(MaterialTheme.colorScheme.secondaryContainer),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.GraphicEq,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f)
+                    )
+                }
                 Text(
-                    text = stringResource(R.string.placeholder_live, index + 1),
+                    text = liveName,
                     color = MaterialTheme.colorScheme.onBackground,
                     fontSize = 12.sp,
                     fontFamily = Poppins,
+                    fontWeight = FontWeight.Medium,
                     modifier = Modifier.padding(top = 4.dp)
                 )
             }
@@ -156,15 +203,10 @@ fun LivesRow() {
 }
 
 @Composable
-fun MoodSection() {
-    // Seção de vibes
+fun MoodSection(onItemClick: (String) -> Unit) {
     val vibeResIds = listOf(
-        R.string.vibe_energy,
-        R.string.vibe_relax,
-        R.string.vibe_focus,
-        R.string.vibe_melancholy,
-        R.string.vibe_romance,
-        R.string.vibe_travel
+        R.string.vibe_energy, R.string.vibe_relax, R.string.vibe_focus,
+        R.string.vibe_melancholy, R.string.vibe_romance, R.string.vibe_travel
     )
 
     Column(modifier = Modifier.fillMaxWidth()) {
@@ -175,18 +217,27 @@ fun MoodSection() {
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(vibeResIds) { resId ->
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                val moodName = stringResource(resId)
+
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .clickable { onItemClick(moodName) }
+                        .padding(8.dp)
+                ) {
                     Box(
                         modifier = Modifier
                             .size(80.dp)
                             .clip(CircleShape)
-                            .background(Color.LightGray)
+                            .background(MaterialTheme.colorScheme.secondaryContainer)
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = stringResource(resId),
+                        text = moodName,
                         fontSize = 12.sp,
                         fontFamily = Poppins,
+                        fontWeight = FontWeight.Medium,
                         color = MaterialTheme.colorScheme.onBackground,
                         textAlign = TextAlign.Center
                     )

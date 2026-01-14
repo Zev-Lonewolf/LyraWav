@@ -34,13 +34,21 @@
     <string name="genre_hardrock">Hard Rock</string>
     <string name="genre_phonk">Phonk</string>
     <string name="genre_trap">Trap</string>
+    <string name="genre_flamenco">Flamenco</string>
+    <string name="genre_arabic">Árabe</string>
+    <string name="genre_greek">Grego</string>
+    <string name="genre_kpop">K-Pop</string>
+    <string name="genre_jpop">J-Pop</string>
+    <string name="genre_cpop">C-Pop</string>
+    <string name="genre_hindustani">Hindustani</string>
     <string name="genre_mpb">MPB</string>
     <string name="genre_funk">Funk</string>
     <string name="genre_sertanejo">Sertanejo</string>
     <string name="genre_pagode">Pagode</string>
     <string name="genre_rap_nacional">Rap Nacional</string>
-    <string name="genre_kpop">K-Pop</string>
-    <string name="genre_jpop">J-Pop</string>
+    <string name="genre_reggaeton">Reggaeton</string>
+    <string name="genre_afrobeat">Afrobeat</string>
+    <string name="genre_reggae">Reggae</string>
     <string name="genre_vaporwave">Vaporwave</string>
     <string name="genre_synthwave">Synthwave</string>
     <string name="genre_citypop">City Pop</string>
@@ -73,4 +81,12 @@
     <string name="greeting_afternoon">Boa tarde</string>
     <string name="greeting_evening">Boa noite</string>
     <string name="greeting_question">Qual o estilo musical de hoje?</string>
+    <string name="menu_your_account">Sua Conta</string>
+    <string name="menu_email_placeholder">premium@lyrawav.com</string>
+    <string name="menu_switch_account">Alternar Conta</string>
+    <string name="menu_history">Histórico</string>
+    <string name="menu_settings">Configurações</string>
+    <string name="menu_logout">Sair</string>
+    <string name="default_artist_name">Autor Desconhecido</string>
+    <string name="cd_play_pause">Reproduzir ou Pausar</string>
 </resources>

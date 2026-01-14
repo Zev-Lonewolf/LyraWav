@@ -23,20 +23,19 @@ fun GreetingSection(userName: String?) {
     val calendar = Calendar.getInstance()
     val hour = calendar.get(Calendar.HOUR_OF_DAY)
 
-    // Busca a saudação traduzida
+    // Saudação baseada na hora do dia
     val greeting = when (hour) {
         in 5..11 -> stringResource(R.string.greeting_morning)
         in 12..17 -> stringResource(R.string.greeting_afternoon)
         else -> stringResource(R.string.greeting_evening)
     }
 
-    // Seção de boas-vindas
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .padding(horizontal = 16.dp, vertical = 12.dp)
     ) {
-        // Título principal com nome destacado
+        // Título principal com o nome em destaque Neon
         Text(
             text = buildAnnotatedString {
                 append(greeting)
@@ -55,7 +54,7 @@ fun GreetingSection(userName: String?) {
             },
             style = TextStyle(
                 fontFamily = Poppins,
-                fontSize = 22.sp,
+                fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onBackground
             )

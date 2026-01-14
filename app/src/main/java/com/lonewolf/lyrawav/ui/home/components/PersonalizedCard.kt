@@ -31,8 +31,7 @@ import com.lonewolf.lyrawav.ui.common.SectionTitle
 import com.lonewolf.lyrawav.ui.theme.Poppins
 
 @Composable
-fun PersonalizedSection() {
-    // Seção de exploração
+fun PersonalizedSection(onItemClick: (String) -> Unit) {
     Column(modifier = Modifier.fillMaxWidth()) {
         SectionTitle(text = stringResource(R.string.section_title_explore))
 
@@ -40,40 +39,66 @@ fun PersonalizedSection() {
             contentPadding = PaddingValues(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            item { DiscoveryChip(stringResource(R.string.chip_trending), Color(0xFF00BFA5), Icons.AutoMirrored.Filled.TrendingUp) }
-            item { DiscoveryChip(stringResource(R.string.chip_top_50), Color(0xFF6200EE), Icons.Default.Star) }
-            item { DiscoveryChip(stringResource(R.string.chip_releases), Color(0xFFFF5252), Icons.Rounded.MusicNote) }
-            item { DiscoveryChip(stringResource(R.string.chip_mixes), Color(0xFFFFAB40), Icons.Rounded.LibraryMusic) }
-            item { DiscoveryChip(stringResource(R.string.chip_community), Color(0xFF1E88E5), Icons.Default.Groups) }
-            item { DiscoveryChip(stringResource(R.string.chip_radios), Color(0xFFFDD835), Icons.Rounded.Radio) }
+            // Lista de chips mapeada para facilitar a manutenção
+            val discoveryItems = listOf(
+                Triple(R.string.chip_trending, Color(0xFF00BFA5), Icons.AutoMirrored.Filled.TrendingUp),
+                Triple(R.string.chip_top_50, Color(0xFF6200EE), Icons.Default.Star),
+                Triple(R.string.chip_releases, Color(0xFFFF5252), Icons.Rounded.MusicNote),
+                Triple(R.string.chip_mixes, Color(0xFFFFAB40), Icons.Rounded.LibraryMusic),
+                Triple(R.string.chip_community, Color(0xFF1E88E5), Icons.Default.Groups),
+                Triple(R.string.chip_radios, Color(0xFFFDD835), Icons.Rounded.Radio)
+            )
+
+            items(discoveryItems.size) { index ->
+                val (titleRes, color, icon) = discoveryItems[index]
+                val title = stringResource(titleRes)
+                DiscoveryChip(
+                    title = title,
+                    color = color,
+                    icon = icon,
+                    onClick = { onItemClick(title) }
+                )
+            }
         }
     }
 }
 
 @Composable
-fun DiscoveryChip(title: String, color: Color, icon: ImageVector) {
-    // Chip individual
+fun DiscoveryChip(
+    title: String,
+    color: Color,
+    icon: ImageVector,
+    onClick: () -> Unit
+) {
+    // Chip clicável de exploração
     Row(
         modifier = Modifier
             .width(170.dp)
             .height(60.dp)
             .clip(RoundedCornerShape(16.dp))
             .background(color.copy(alpha = 0.12f))
-            .border(0.5.dp, color.copy(alpha = 0.25f), RoundedCornerShape(16.dp))
-            .clickable { /* Navegação */ }
+            .border(
+                0.5.dp,
+                color.copy(alpha = 0.25f),
+                RoundedCornerShape(16.dp)
+            )
+            .clickable { onClick() }
             .padding(horizontal = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Ícone do chip
+        // Ícone com destaque visual
         Box(
             modifier = Modifier
                 .size(36.dp)
-                .background(color.copy(alpha = 0.2f), RoundedCornerShape(10.dp)),
+                .background(
+                    color.copy(alpha = 0.2f),
+                    RoundedCornerShape(10.dp)
+                ),
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 imageVector = icon,
-                contentDescription = null, // Título já serve como descrição
+                contentDescription = null,
                 tint = color,
                 modifier = Modifier.size(20.dp)
             )

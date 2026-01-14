@@ -25,7 +25,8 @@ import com.lonewolf.lyrawav.ui.theme.Poppins
 data class Genre(val nameResId: Int, val gradient: Brush)
 
 @Composable
-fun GenreSection() {
+fun GenreSection(onItemClick: (String) -> Unit) {
+    // Lista fixa de gêneros expandida com sons globais e regionais
     val genres = listOf(
         Genre(R.string.genre_pop, Brush.linearGradient(listOf(Color(0xFF8E24AA), Color(0xFFBA68C8)))),
         Genre(R.string.genre_rock, Brush.linearGradient(listOf(Color(0xFF263238), Color(0xFF455A64)))),
@@ -42,22 +43,41 @@ fun GenreSection() {
         Genre(R.string.genre_hardrock, Brush.linearGradient(listOf(Color(0xFF212121), Color(0xFF616161)))),
         Genre(R.string.genre_phonk, Brush.linearGradient(listOf(Color(0xFF004D40), Color(0xFF009688)))),
         Genre(R.string.genre_trap, Brush.linearGradient(listOf(Color(0xFF263238), Color(0xFF546E7A)))),
+
+        // Mediterrâneo e Oriente Médio
+        Genre(R.string.genre_flamenco, Brush.linearGradient(listOf(Color(0xFFD32F2F), Color(0xFFE64A19)))),
+        Genre(R.string.genre_arabic, Brush.linearGradient(listOf(Color(0xFF5D4037), Color(0xFF8D6E63)))),
+        Genre(R.string.genre_greek, Brush.linearGradient(listOf(Color(0xFF0277BD), Color(0xFF4FC3F7)))),
+
+        // Ásia
+        Genre(R.string.genre_kpop, Brush.linearGradient(listOf(Color(0xFFD81B60), Color(0xFFF48FB1)))),
+        Genre(R.string.genre_jpop, Brush.linearGradient(listOf(Color(0xFFAD1457), Color(0xFFF06292)))),
+        Genre(R.string.genre_cpop, Brush.linearGradient(listOf(Color(0xFFB71C1C), Color(0xFFFFD600)))),
+        Genre(R.string.genre_hindustani, Brush.linearGradient(listOf(Color(0xFFE65100), Color(0xFFFFB74D)))),
+
+        // Brasil e América Latina
         Genre(R.string.genre_mpb, Brush.linearGradient(listOf(Color(0xFF1B5E20), Color(0xFF81C784)))),
         Genre(R.string.genre_funk, Brush.linearGradient(listOf(Color(0xFF4A148C), Color(0xFFAB47BC)))),
         Genre(R.string.genre_sertanejo, Brush.linearGradient(listOf(Color(0xFF3E2723), Color(0xFFD7CCC8)))),
         Genre(R.string.genre_pagode, Brush.linearGradient(listOf(Color(0xFFBF360C), Color(0xFFFFAB91)))),
         Genre(R.string.genre_rap_nacional, Brush.linearGradient(listOf(Color(0xFF263238), Color(0xFF90A4AE)))),
-        Genre(R.string.genre_kpop, Brush.linearGradient(listOf(Color(0xFFD81B60), Color(0xFFF48FB1)))),
-        Genre(R.string.genre_jpop, Brush.linearGradient(listOf(Color(0xFFAD1457), Color(0xFFF06292)))),
+        Genre(R.string.genre_reggaeton, Brush.linearGradient(listOf(Color(0xFFC2185B), Color(0xFFF06292)))),
+
+        // África e Caribe
+        Genre(R.string.genre_afrobeat, Brush.linearGradient(listOf(Color(0xFF1B5E20), Color(0xFFFBC02D)))),
+        Genre(R.string.genre_reggae, Brush.linearGradient(listOf(Color(0xFF388E3C), Color(0xFFFBC02D)))),
+
+        // Estética e Retro
         Genre(R.string.genre_vaporwave, Brush.linearGradient(listOf(Color(0xFF4A148C), Color(0xFFCE93D8)))),
         Genre(R.string.genre_synthwave, Brush.linearGradient(listOf(Color(0xFF0D47A1), Color(0xFF64B5F6)))),
         Genre(R.string.genre_citypop, Brush.linearGradient(listOf(Color(0xFF006064), Color(0xFF4DD0E1))))
     )
 
-    // Lista de gêneros
     Column(modifier = Modifier.fillMaxWidth()) {
+        // Título da seção
         SectionTitle(text = stringResource(R.string.section_title_genres))
 
+        // Grid horizontal com rolagem lateral
         LazyHorizontalGrid(
             rows = GridCells.Fixed(3),
             modifier = Modifier.height(210.dp),
@@ -74,14 +94,14 @@ fun GenreSection() {
 
 @Composable
 fun GenreCard(genre: Genre) {
-    // Card individual
+    // Card individual de gênero
     Box(
         modifier = Modifier
             .width(160.dp)
             .height(60.dp)
             .clip(RoundedCornerShape(12.dp))
             .background(genre.gradient)
-            .clickable { }
+            .clickable { /* navegação futura */ }
             .padding(horizontal = 16.dp),
         contentAlignment = Alignment.CenterStart
     ) {

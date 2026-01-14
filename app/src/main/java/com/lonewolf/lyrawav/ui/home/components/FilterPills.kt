@@ -29,10 +29,8 @@ fun FilterPills() {
         R.string.filter_travel
     )
 
-    // Armazenamos o ID selecionado (0 significa nenhum)
     var selectedFilterResId by remember { mutableIntStateOf(0) }
 
-    // Lista de filtros
     LazyRow(
         modifier = Modifier.fillMaxWidth(),
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
@@ -40,15 +38,15 @@ fun FilterPills() {
     ) {
         items(filters) { filterResId ->
             val isSelected = selectedFilterResId == filterResId
-            val filterName = stringResource(filterResId)
 
-            // Pill individual
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(20.dp))
                     .background(
-                        if (isSelected) MaterialTheme.colorScheme.onSurface
-                        else MaterialTheme.colorScheme.surface
+                        if (isSelected)
+                            MaterialTheme.colorScheme.onSurface
+                        else
+                            MaterialTheme.colorScheme.surfaceVariant
                     )
                     .clickable {
                         selectedFilterResId = if (isSelected) 0 else filterResId
@@ -56,14 +54,16 @@ fun FilterPills() {
                     .padding(horizontal = 16.dp, vertical = 8.dp)
             ) {
                 Text(
-                    text = filterName,
+                    text = stringResource(filterResId),
                     style = MaterialTheme.typography.bodyMedium.copy(
                         fontFamily = Poppins,
                         fontWeight = FontWeight.Medium,
                         fontSize = 13.sp
                     ),
-                    color = if (isSelected) MaterialTheme.colorScheme.surface
-                    else MaterialTheme.colorScheme.onSurface
+                    color = if (isSelected)
+                        MaterialTheme.colorScheme.surface
+                    else
+                        MaterialTheme.colorScheme.onSurface
                 )
             }
         }

@@ -11,7 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -35,7 +34,7 @@ fun ArtistCard(name: String, onClick: () -> Unit) {
             modifier = Modifier
                 .size(80.dp)
                 .clip(CircleShape)
-                .background(Color.LightGray)
+                .background(MaterialTheme.colorScheme.secondaryContainer) // Cor gelo do tema
         )
 
         Spacer(modifier = Modifier.height(4.dp))
@@ -55,7 +54,7 @@ fun ArtistCard(name: String, onClick: () -> Unit) {
 }
 
 @Composable
-fun ArtistSection() {
+fun ArtistSection(onItemClick: (String) -> Unit) {
     // Lista de artistas
     Column(modifier = Modifier.fillMaxWidth()) {
         SectionTitle(text = stringResource(R.string.section_title_artists))
@@ -65,9 +64,10 @@ fun ArtistSection() {
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(6) { index ->
+                val artistName = stringResource(R.string.placeholder_artist_name, index + 1)
                 ArtistCard(
-                    name = stringResource(R.string.placeholder_artist_name, index + 1)
-                ) { /* Ação */ }
+                    name = artistName
+                ) { onItemClick(artistName) }
             }
         }
     }

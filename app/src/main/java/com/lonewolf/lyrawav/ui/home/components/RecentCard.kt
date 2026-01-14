@@ -2,6 +2,7 @@ package com.lonewolf.lyrawav.ui.home.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,23 +27,29 @@ fun RecentCard(
     subtitle: String,
     onClick: () -> Unit
 ) {
-    // Card individual
+
+    val isDark = isSystemInDarkTheme()
+    val albumColor = if (isDark) {
+        MaterialTheme.colorScheme.secondaryContainer
+    } else {
+        MaterialTheme.colorScheme.surfaceVariant
+    }
+
     Column(
         modifier = Modifier
             .width(140.dp)
+            .clip(RoundedCornerShape(12.dp))
             .clickable { onClick() }
     ) {
-        // Capa
         Box(
             modifier = Modifier
                 .size(140.dp)
                 .clip(RoundedCornerShape(12.dp))
-                .background(Color.LightGray)
+                .background(albumColor)
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Título
         Text(
             text = title,
             style = MaterialTheme.typography.bodyMedium.copy(
@@ -55,7 +62,6 @@ fun RecentCard(
             overflow = TextOverflow.Ellipsis
         )
 
-        // Subtítulo
         Text(
             text = subtitle,
             style = MaterialTheme.typography.bodySmall.copy(
@@ -71,8 +77,7 @@ fun RecentCard(
 }
 
 @Composable
-fun RecentSection() {
-    // Seção de recentes
+fun RecentSection(onItemClick: (String) -> Unit) {
     Column(modifier = Modifier.fillMaxWidth()) {
         SectionTitle(text = stringResource(R.string.section_title_recent))
 
@@ -81,10 +86,15 @@ fun RecentSection() {
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(5) { index ->
+                val albumName = stringResource(
+                    R.string.placeholder_album_name,
+                    index + 1
+                )
+
                 RecentCard(
-                    title = stringResource(R.string.placeholder_album_name, index + 1),
+                    title = albumName,
                     subtitle = stringResource(R.string.placeholder_artist_moment),
-                    onClick = { /* ação */ }
+                    onClick = { onItemClick(albumName) }
                 )
             }
         }

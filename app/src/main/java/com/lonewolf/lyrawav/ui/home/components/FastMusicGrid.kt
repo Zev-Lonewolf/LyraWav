@@ -1,6 +1,5 @@
 package com.lonewolf.lyrawav.ui.home.components
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -15,16 +14,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.lonewolf.lyrawav.R
 
 @Composable
-fun FastMusicGrid() {
-    val context = LocalContext.current
-
+fun FastMusicGrid(onItemClick: (String) -> Unit) {
     // Grade de músicas
     LazyHorizontalGrid(
         rows = GridCells.Fixed(4),
@@ -35,20 +30,18 @@ fun FastMusicGrid() {
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
-        items(10) {
-            FastMusicCard(onClick = {
-                Toast.makeText(
-                    context,
-                    context.getString(R.string.toast_in_development),
-                    Toast.LENGTH_SHORT
-                ).show()
-            })
+        items(10) { index ->
+            val musicName = "Music Choice ${index + 1}"
+            FastMusicCard(
+                title = musicName,
+                onClick = { onItemClick(musicName) }
+            )
         }
     }
 }
 
 @Composable
-fun FastMusicCard(onClick: () -> Unit) {
+fun FastMusicCard(title: String, onClick: () -> Unit) {
     // Card individual
     Row(
         modifier = Modifier
@@ -62,7 +55,7 @@ fun FastMusicCard(onClick: () -> Unit) {
         Box(
             modifier = Modifier
                 .size(40.dp)
-                .background(Color.LightGray, RoundedCornerShape(6.dp))
+                .background(MaterialTheme.colorScheme.secondaryContainer, RoundedCornerShape(6.dp))
         )
 
         Spacer(modifier = Modifier.width(10.dp))
@@ -73,14 +66,14 @@ fun FastMusicCard(onClick: () -> Unit) {
                 modifier = Modifier
                     .fillMaxWidth(0.75f)
                     .height(10.dp)
-                    .background(Color.LightGray, RoundedCornerShape(3.dp))
+                    .background(MaterialTheme.colorScheme.secondaryContainer, RoundedCornerShape(3.dp))
             )
             Spacer(modifier = Modifier.height(4.dp))
             Box(
                 modifier = Modifier
                     .fillMaxWidth(0.45f)
                     .height(8.dp)
-                    .background(Color.LightGray.copy(alpha = 0.5f), RoundedCornerShape(3.dp))
+                    .background(MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.6f), RoundedCornerShape(3.dp))
             )
         }
 
@@ -88,7 +81,7 @@ fun FastMusicCard(onClick: () -> Unit) {
         Icon(
             imageVector = Icons.Default.MoreVert,
             contentDescription = stringResource(R.string.cd_more_options),
-            tint = Color.Gray,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.size(18.dp)
         )
     }
