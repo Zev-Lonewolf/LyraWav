@@ -11,15 +11,26 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.lonewolf.lyrawav.R
 import com.lonewolf.lyrawav.ui.theme.Poppins
 
 @Composable
 fun FilterPills() {
-    val filters = listOf("Foco", "Treino", "No Carro", "Relaxar", "Festa", "Viagem")
-    var selectedFilter by remember { mutableStateOf("") }
+    val filters = listOf(
+        R.string.filter_focus,
+        R.string.filter_workout,
+        R.string.filter_car,
+        R.string.filter_relax,
+        R.string.filter_party,
+        R.string.filter_travel
+    )
+
+    // Armazenamos o ID selecionado (0 significa nenhum)
+    var selectedFilterResId by remember { mutableIntStateOf(0) }
 
     // Lista de filtros
     LazyRow(
@@ -27,8 +38,9 @@ fun FilterPills() {
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(filters) { filter ->
-            val isSelected = selectedFilter == filter
+        items(filters) { filterResId ->
+            val isSelected = selectedFilterResId == filterResId
+            val filterName = stringResource(filterResId)
 
             // Pill individual
             Box(
@@ -38,11 +50,13 @@ fun FilterPills() {
                         if (isSelected) MaterialTheme.colorScheme.onSurface
                         else MaterialTheme.colorScheme.surface
                     )
-                    .clickable { selectedFilter = if (isSelected) "" else filter }
+                    .clickable {
+                        selectedFilterResId = if (isSelected) 0 else filterResId
+                    }
                     .padding(horizontal = 16.dp, vertical = 8.dp)
             ) {
                 Text(
-                    text = filter,
+                    text = filterName,
                     style = MaterialTheme.typography.bodyMedium.copy(
                         fontFamily = Poppins,
                         fontWeight = FontWeight.Medium,

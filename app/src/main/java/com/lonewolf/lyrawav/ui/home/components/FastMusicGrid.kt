@@ -10,13 +10,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.lonewolf.lyrawav.R
 
 @Composable
 fun FastMusicGrid() {
@@ -34,7 +37,11 @@ fun FastMusicGrid() {
     ) {
         items(10) {
             FastMusicCard(onClick = {
-                Toast.makeText(context, "Em desenvolvimento :)", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.toast_in_development),
+                    Toast.LENGTH_SHORT
+                ).show()
             })
         }
     }
@@ -80,9 +87,24 @@ fun FastMusicCard(onClick: () -> Unit) {
         // Menu
         Icon(
             imageVector = Icons.Default.MoreVert,
-            contentDescription = null,
+            contentDescription = stringResource(R.string.cd_more_options),
             tint = Color.Gray,
             modifier = Modifier.size(18.dp)
         )
     }
+}
+
+@Composable
+fun FastChoiceCard(onClick: () -> Unit) {
+    // Card individual visual
+    Box(
+        modifier = Modifier
+            .width(160.dp)
+            .height(72.dp)
+            .background(
+                color = MaterialTheme.colorScheme.primaryContainer,
+                shape = RoundedCornerShape(14.dp)
+            )
+            .clickable { onClick() }
+    )
 }

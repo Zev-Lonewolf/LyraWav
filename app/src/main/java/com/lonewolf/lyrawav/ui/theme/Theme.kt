@@ -9,13 +9,15 @@ import androidx.compose.ui.graphics.Color
 
 // Cores para o modo claro
 private val LightColors = lightColorScheme(
-    primary = Color(0xFFF8F9FA),
-    onPrimary = Color(0xFF0E0E16),
+    primary = Color(0xFF0E0E16),
+    onPrimary = Color(0xFFF8F9FA),
     background = Color(0xFFF8F9FA),
     onBackground = Color(0xFF0E0E16),
-    surface = Color(0xFFE5E5E5),
+    surface = Color(0xFFE0E0E0),
     onSurface = Color(0xFF0E0E16),
-    primaryContainer = Color(0xFFE5E5E5),
+    surfaceVariant = Color(0xFFD6D6D6),
+    onSurfaceVariant = Color(0xFF0E0E16),
+    primaryContainer = Color(0xFFE0E0E0)
 )
 
 // Cores para o modo escuro

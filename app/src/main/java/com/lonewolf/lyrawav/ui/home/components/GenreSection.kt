@@ -14,47 +14,49 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.lonewolf.lyrawav.R
 import com.lonewolf.lyrawav.ui.common.SectionTitle
 import com.lonewolf.lyrawav.ui.theme.Poppins
 
-data class Genre(val name: String, val gradient: Brush)
+data class Genre(val nameResId: Int, val gradient: Brush)
 
 @Composable
 fun GenreSection() {
     val genres = listOf(
-        Genre("Pop", Brush.linearGradient(listOf(Color(0xFF8E24AA), Color(0xFFBA68C8)))),
-        Genre("Rock", Brush.linearGradient(listOf(Color(0xFF263238), Color(0xFF455A64)))),
-        Genre("Hip Hop", Brush.linearGradient(listOf(Color(0xFFBF360C), Color(0xFFFF7043)))),
-        Genre("Eletrônica", Brush.linearGradient(listOf(Color(0xFF1B5E20), Color(0xFF66BB6A)))),
-        Genre("Indie", Brush.linearGradient(listOf(Color(0xFF283593), Color(0xFF5C6BC0)))),
-        Genre("Lofi", Brush.linearGradient(listOf(Color(0xFF1A237E), Color(0xFF3F51B5)))),
-        Genre("Jazz", Brush.linearGradient(listOf(Color(0xFF3E2723), Color(0xFF795548)))),
-        Genre("Soul", Brush.linearGradient(listOf(Color(0xFF4E342E), Color(0xFFA1887F)))),
-        Genre("R&B", Brush.linearGradient(listOf(Color(0xFF311B92), Color(0xFF9575CD)))),
-        Genre("Ambient", Brush.linearGradient(listOf(Color(0xFF004D40), Color(0xFF4DB6AC)))),
-        Genre("Metal", Brush.linearGradient(listOf(Color(0xFF000000), Color(0xFF424242)))),
-        Genre("Punk", Brush.linearGradient(listOf(Color(0xFFB71C1C), Color(0xFFD32F2F)))),
-        Genre("Hard Rock", Brush.linearGradient(listOf(Color(0xFF212121), Color(0xFF616161)))),
-        Genre("Phonk", Brush.linearGradient(listOf(Color(0xFF004D40), Color(0xFF009688)))),
-        Genre("Trap", Brush.linearGradient(listOf(Color(0xFF263238), Color(0xFF546E7A)))),
-        Genre("MPB", Brush.linearGradient(listOf(Color(0xFF1B5E20), Color(0xFF81C784)))),
-        Genre("Funk", Brush.linearGradient(listOf(Color(0xFF4A148C), Color(0xFFAB47BC)))),
-        Genre("Sertanejo", Brush.linearGradient(listOf(Color(0xFF3E2723), Color(0xFFD7CCC8)))),
-        Genre("Pagode", Brush.linearGradient(listOf(Color(0xFFBF360C), Color(0xFFFFAB91)))),
-        Genre("Rap Nacional", Brush.linearGradient(listOf(Color(0xFF263238), Color(0xFF90A4AE)))),
-        Genre("K-Pop", Brush.linearGradient(listOf(Color(0xFFD81B60), Color(0xFFF48FB1)))),
-        Genre("J-Pop", Brush.linearGradient(listOf(Color(0xFFAD1457), Color(0xFFF06292)))),
-        Genre("Vaporwave", Brush.linearGradient(listOf(Color(0xFF4A148C), Color(0xFFCE93D8)))),
-        Genre("Synthwave", Brush.linearGradient(listOf(Color(0xFF0D47A1), Color(0xFF64B5F6)))),
-        Genre("City Pop", Brush.linearGradient(listOf(Color(0xFF006064), Color(0xFF4DD0E1))))
+        Genre(R.string.genre_pop, Brush.linearGradient(listOf(Color(0xFF8E24AA), Color(0xFFBA68C8)))),
+        Genre(R.string.genre_rock, Brush.linearGradient(listOf(Color(0xFF263238), Color(0xFF455A64)))),
+        Genre(R.string.genre_hiphop, Brush.linearGradient(listOf(Color(0xFFBF360C), Color(0xFFFF7043)))),
+        Genre(R.string.genre_electronic, Brush.linearGradient(listOf(Color(0xFF1B5E20), Color(0xFF66BB6A)))),
+        Genre(R.string.genre_indie, Brush.linearGradient(listOf(Color(0xFF283593), Color(0xFF5C6BC0)))),
+        Genre(R.string.genre_lofi, Brush.linearGradient(listOf(Color(0xFF1A237E), Color(0xFF3F51B5)))),
+        Genre(R.string.genre_jazz, Brush.linearGradient(listOf(Color(0xFF3E2723), Color(0xFF795548)))),
+        Genre(R.string.genre_soul, Brush.linearGradient(listOf(Color(0xFF4E342E), Color(0xFFA1887F)))),
+        Genre(R.string.genre_rnb, Brush.linearGradient(listOf(Color(0xFF311B92), Color(0xFF9575CD)))),
+        Genre(R.string.genre_ambient, Brush.linearGradient(listOf(Color(0xFF004D40), Color(0xFF4DB6AC)))),
+        Genre(R.string.genre_metal, Brush.linearGradient(listOf(Color(0xFF000000), Color(0xFF424242)))),
+        Genre(R.string.genre_punk, Brush.linearGradient(listOf(Color(0xFFB71C1C), Color(0xFFD32F2F)))),
+        Genre(R.string.genre_hardrock, Brush.linearGradient(listOf(Color(0xFF212121), Color(0xFF616161)))),
+        Genre(R.string.genre_phonk, Brush.linearGradient(listOf(Color(0xFF004D40), Color(0xFF009688)))),
+        Genre(R.string.genre_trap, Brush.linearGradient(listOf(Color(0xFF263238), Color(0xFF546E7A)))),
+        Genre(R.string.genre_mpb, Brush.linearGradient(listOf(Color(0xFF1B5E20), Color(0xFF81C784)))),
+        Genre(R.string.genre_funk, Brush.linearGradient(listOf(Color(0xFF4A148C), Color(0xFFAB47BC)))),
+        Genre(R.string.genre_sertanejo, Brush.linearGradient(listOf(Color(0xFF3E2723), Color(0xFFD7CCC8)))),
+        Genre(R.string.genre_pagode, Brush.linearGradient(listOf(Color(0xFFBF360C), Color(0xFFFFAB91)))),
+        Genre(R.string.genre_rap_nacional, Brush.linearGradient(listOf(Color(0xFF263238), Color(0xFF90A4AE)))),
+        Genre(R.string.genre_kpop, Brush.linearGradient(listOf(Color(0xFFD81B60), Color(0xFFF48FB1)))),
+        Genre(R.string.genre_jpop, Brush.linearGradient(listOf(Color(0xFFAD1457), Color(0xFFF06292)))),
+        Genre(R.string.genre_vaporwave, Brush.linearGradient(listOf(Color(0xFF4A148C), Color(0xFFCE93D8)))),
+        Genre(R.string.genre_synthwave, Brush.linearGradient(listOf(Color(0xFF0D47A1), Color(0xFF64B5F6)))),
+        Genre(R.string.genre_citypop, Brush.linearGradient(listOf(Color(0xFF006064), Color(0xFF4DD0E1))))
     )
 
     // Lista de gêneros
     Column(modifier = Modifier.fillMaxWidth()) {
-        SectionTitle(text = "Vibes & Gêneros")
+        SectionTitle(text = stringResource(R.string.section_title_genres))
 
         LazyHorizontalGrid(
             rows = GridCells.Fixed(3),
@@ -84,7 +86,7 @@ fun GenreCard(genre: Genre) {
         contentAlignment = Alignment.CenterStart
     ) {
         Text(
-            text = genre.name,
+            text = stringResource(genre.nameResId),
             fontFamily = Poppins,
             fontWeight = FontWeight.SemiBold,
             fontSize = 14.sp,

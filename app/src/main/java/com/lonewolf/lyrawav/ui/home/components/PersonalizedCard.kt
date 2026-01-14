@@ -21,10 +21,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.lonewolf.lyrawav.R
 import com.lonewolf.lyrawav.ui.common.SectionTitle
 import com.lonewolf.lyrawav.ui.theme.Poppins
 
@@ -32,18 +34,18 @@ import com.lonewolf.lyrawav.ui.theme.Poppins
 fun PersonalizedSection() {
     // Seção de exploração
     Column(modifier = Modifier.fillMaxWidth()) {
-        SectionTitle(text = "Explorar")
+        SectionTitle(text = stringResource(R.string.section_title_explore))
 
         LazyRow(
             contentPadding = PaddingValues(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            item { DiscoveryChip("Em Alta", Color(0xFF00BFA5), Icons.AutoMirrored.Filled.TrendingUp) }
-            item { DiscoveryChip("Top 50", Color(0xFF6200EE), Icons.Default.Star) }
-            item { DiscoveryChip("Lançamentos", Color(0xFFFF5252), Icons.Rounded.MusicNote) }
-            item { DiscoveryChip("Mixes", Color(0xFFFFAB40), Icons.Rounded.LibraryMusic) }
-            item { DiscoveryChip("Comunidade", Color(0xFF1E88E5), Icons.Default.Groups) }
-            item { DiscoveryChip("Rádios", Color(0xFFFDD835), Icons.Rounded.Radio) }
+            item { DiscoveryChip(stringResource(R.string.chip_trending), Color(0xFF00BFA5), Icons.AutoMirrored.Filled.TrendingUp) }
+            item { DiscoveryChip(stringResource(R.string.chip_top_50), Color(0xFF6200EE), Icons.Default.Star) }
+            item { DiscoveryChip(stringResource(R.string.chip_releases), Color(0xFFFF5252), Icons.Rounded.MusicNote) }
+            item { DiscoveryChip(stringResource(R.string.chip_mixes), Color(0xFFFFAB40), Icons.Rounded.LibraryMusic) }
+            item { DiscoveryChip(stringResource(R.string.chip_community), Color(0xFF1E88E5), Icons.Default.Groups) }
+            item { DiscoveryChip(stringResource(R.string.chip_radios), Color(0xFFFDD835), Icons.Rounded.Radio) }
         }
     }
 }
@@ -71,7 +73,7 @@ fun DiscoveryChip(title: String, color: Color, icon: ImageVector) {
         ) {
             Icon(
                 imageVector = icon,
-                contentDescription = null,
+                contentDescription = null, // Título já serve como descrição
                 tint = color,
                 modifier = Modifier.size(20.dp)
             )

@@ -16,9 +16,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.lonewolf.lyrawav.R
 import com.lonewolf.lyrawav.ui.common.SectionTitle
 import com.lonewolf.lyrawav.ui.theme.Poppins
 
@@ -26,15 +29,15 @@ import com.lonewolf.lyrawav.ui.theme.Poppins
 fun FinalPilaresSection() {
     // Seções finais (IA, Podcasts e Lives)
     Column(modifier = Modifier.fillMaxWidth().padding(bottom = 110.dp)) {
-        SectionTitle(text = "Lyra Live • IA")
+        SectionTitle(text = stringResource(R.string.section_title_lyra_ia))
         RadioIACard()
 
         Spacer(modifier = Modifier.height(24.dp))
-        SectionTitle(text = "Podcasts para você")
+        SectionTitle(text = stringResource(R.string.section_title_podcasts))
         PodcastsRow()
 
         Spacer(modifier = Modifier.height(24.dp))
-        SectionTitle(text = "Lives agora")
+        SectionTitle(text = stringResource(R.string.section_title_lives))
         LivesRow()
     }
 }
@@ -62,7 +65,7 @@ fun RadioIACard() {
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = "Sua Rádio IA",
+                    text = stringResource(R.string.ia_radio_title),
                     color = Color.White,
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Bold,
@@ -70,7 +73,7 @@ fun RadioIACard() {
                     maxLines = 1
                 )
                 Text(
-                    text = "Programação personalizada agora...",
+                    text = stringResource(R.string.ia_radio_subtitle),
                     color = Color.White.copy(alpha = 0.7f),
                     fontFamily = Poppins,
                     fontSize = 13.sp,
@@ -87,7 +90,7 @@ fun RadioIACard() {
             modifier = Modifier.align(Alignment.TopEnd)
         ) {
             Text(
-                text = "AO VIVO",
+                text = stringResource(R.string.badge_live_now),
                 modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                 color = Color.White,
                 fontSize = 9.sp,
@@ -100,18 +103,25 @@ fun RadioIACard() {
 @Composable
 fun PodcastsRow() {
     // Lista de podcasts
-    val pods = List(5) { "Podcast ${it + 1}" }
-    LazyRow(contentPadding = PaddingValues(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-        items(pods) { pod ->
+    LazyRow(
+        contentPadding = PaddingValues(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        items(5) { index ->
             Box(
                 modifier = Modifier
                     .size(130.dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                    .background(Color.LightGray)
                     .clickable { },
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = pod, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp, fontFamily = Poppins)
+                Text(
+                    text = stringResource(R.string.placeholder_podcast, index + 1),
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontSize = 12.sp,
+                    fontFamily = Poppins
+                )
             }
         }
     }
@@ -120,20 +130,22 @@ fun PodcastsRow() {
 @Composable
 fun LivesRow() {
     // Lista de lives
-    val lives = List(5) { "Live ${it + 1}" }
-    LazyRow(contentPadding = PaddingValues(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-        items(lives) { live ->
+    LazyRow(
+        contentPadding = PaddingValues(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        items(5) { index ->
             Column(Modifier.width(150.dp)) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(85.dp)
                         .clip(RoundedCornerShape(12.dp))
-                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .background(Color.LightGray)
                 )
                 Text(
-                    text = live,
-                    color = MaterialTheme.colorScheme.onSurface,
+                    text = stringResource(R.string.placeholder_live, index + 1),
+                    color = MaterialTheme.colorScheme.onBackground,
                     fontSize = 12.sp,
                     fontFamily = Poppins,
                     modifier = Modifier.padding(top = 4.dp)
@@ -146,15 +158,38 @@ fun LivesRow() {
 @Composable
 fun MoodSection() {
     // Seção de vibes
-    val vibes = listOf("Energia", "Relax", "Foco", "Melancolia", "Romance", "Viagem")
+    val vibeResIds = listOf(
+        R.string.vibe_energy,
+        R.string.vibe_relax,
+        R.string.vibe_focus,
+        R.string.vibe_melancholy,
+        R.string.vibe_romance,
+        R.string.vibe_travel
+    )
+
     Column(modifier = Modifier.fillMaxWidth()) {
-        SectionTitle(text = "Sintonize sua Vibe")
-        LazyRow(contentPadding = PaddingValues(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-            items(vibes) { vibe ->
+        SectionTitle(text = stringResource(R.string.section_title_moods))
+
+        LazyRow(
+            contentPadding = PaddingValues(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            items(vibeResIds) { resId ->
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Box(modifier = Modifier.size(80.dp).clip(CircleShape).background(MaterialTheme.colorScheme.surfaceVariant))
+                    Box(
+                        modifier = Modifier
+                            .size(80.dp)
+                            .clip(CircleShape)
+                            .background(Color.LightGray)
+                    )
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(text = vibe, fontSize = 12.sp, fontFamily = Poppins, color = MaterialTheme.colorScheme.onSurface)
+                    Text(
+                        text = stringResource(resId),
+                        fontSize = 12.sp,
+                        fontFamily = Poppins,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        textAlign = TextAlign.Center
+                    )
                 }
             }
         }

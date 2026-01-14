@@ -11,10 +11,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.lonewolf.lyrawav.R
 import com.lonewolf.lyrawav.ui.common.SectionTitle
 import com.lonewolf.lyrawav.ui.theme.Poppins
 
@@ -72,7 +74,7 @@ fun RecentCard(
 fun RecentSection() {
     // Seção de recentes
     Column(modifier = Modifier.fillMaxWidth()) {
-        SectionTitle(text = "Tocados recentemente")
+        SectionTitle(text = stringResource(R.string.section_title_recent))
 
         LazyRow(
             contentPadding = PaddingValues(horizontal = 16.dp),
@@ -80,8 +82,8 @@ fun RecentSection() {
         ) {
             items(5) { index ->
                 RecentCard(
-                    title = "Álbum Favorito $index",
-                    subtitle = "Artista do Momento",
+                    title = stringResource(R.string.placeholder_album_name, index + 1),
+                    subtitle = stringResource(R.string.placeholder_artist_moment),
                     onClick = { /* ação */ }
                 )
             }

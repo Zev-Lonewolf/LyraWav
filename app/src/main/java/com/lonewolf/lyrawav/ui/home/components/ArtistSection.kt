@@ -12,11 +12,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.lonewolf.lyrawav.R
 import com.lonewolf.lyrawav.ui.common.SectionTitle
 import com.lonewolf.lyrawav.ui.theme.Poppins
 
@@ -56,14 +58,16 @@ fun ArtistCard(name: String, onClick: () -> Unit) {
 fun ArtistSection() {
     // Lista de artistas
     Column(modifier = Modifier.fillMaxWidth()) {
-        SectionTitle(text = "Seus artistas favoritos")
+        SectionTitle(text = stringResource(R.string.section_title_artists))
 
         LazyRow(
             contentPadding = PaddingValues(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(6) { index ->
-                ArtistCard(name = "Artista $index") { /* Ação */ }
+                ArtistCard(
+                    name = stringResource(R.string.placeholder_artist_name, index + 1)
+                ) { /* Ação */ }
             }
         }
     }

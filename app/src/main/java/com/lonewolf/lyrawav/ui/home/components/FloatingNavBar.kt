@@ -16,9 +16,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.lonewolf.lyrawav.R
 import com.lonewolf.lyrawav.ui.theme.Poppins
 
 @Composable
@@ -46,9 +48,9 @@ fun FloatingNavBar() {
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            NavIcon(Icons.Default.Home, "Início", isSelected = true)
-            NavIcon(Icons.Default.Search, "Explorar", isSelected = false)
-            NavIcon(Icons.AutoMirrored.Filled.List, "Biblioteca", isSelected = false)
+            NavIcon(Icons.Default.Home, stringResource(R.string.nav_home), isSelected = true)
+            NavIcon(Icons.Default.Search, stringResource(R.string.nav_explore), isSelected = false)
+            NavIcon(Icons.AutoMirrored.Filled.List, stringResource(R.string.nav_library), isSelected = false)
         }
     }
 }
