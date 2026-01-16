@@ -142,8 +142,8 @@ fun PodcastsRow(onItemClick: (String) -> Unit) {
                     Icon(
                         imageVector = Icons.Default.GraphicEq,
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.1f),
-                        modifier = Modifier.size(40.dp)
+                        tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+                        modifier = Modifier.size(28.dp)
                     )
                 }
 
@@ -186,7 +186,8 @@ fun LivesRow(onItemClick: (String) -> Unit) {
                     Icon(
                         imageVector = Icons.Default.GraphicEq,
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f)
+                        tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                        modifier = Modifier.size(32.dp)
                     )
                 }
                 Text(
