@@ -3,6 +3,7 @@ package com.lonewolf.lyrawav.ui.common
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -14,6 +15,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -59,7 +61,7 @@ fun FloatingNavBar() {
 }
 
 @Composable
-fun NavIcon(
+fun RowScope.NavIcon(
     icon: ImageVector,
     label: String,
     isSelected: Boolean
@@ -70,10 +72,13 @@ fun NavIcon(
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
         modifier = Modifier
-            .clip(RoundedCornerShape(12.dp)) // Área de toque
+            .fillMaxHeight()
+            .weight(1f)
+            .clip(RoundedCornerShape(16.dp))
             .clickable { /* navegação futuramente */ }
-            .padding(4.dp)
+            .padding(vertical = 4.dp)
     ) {
         // Ícone principal
         Icon(
@@ -87,9 +92,10 @@ fun NavIcon(
         Text(
             text = label,
             fontFamily = Poppins,
-            fontWeight = FontWeight.SemiBold,
-            fontSize = 10.sp,
-            color = if (isSelected) activeColor else inactiveColor
+            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+            fontSize = 11.sp,
+            color = if (isSelected) activeColor else inactiveColor,
+            lineHeight = 14.sp
         )
     }
 }

@@ -3,11 +3,8 @@
     <string name="logo_part_1">Lyra</string>
     <string name="logo_part_2">Wav</string>
     <string name="cd_profile_button">Perfil</string>
-    <string name="section_recent_played">Tocados recentemente</string>
-    <string name="section_favorite_artists">Seus artistas favoritos</string>
     <string name="section_title_artists">Seus artistas favoritos</string>
     <string name="placeholder_artist_name">Artista %1$d</string>
-    <string name="toast_in_development">Em desenvolvimento :)</string>
     <string name="cd_more_options">Mais opções</string>
     <string name="filter_focus">Foco</string>
     <string name="filter_workout">Treino</string>

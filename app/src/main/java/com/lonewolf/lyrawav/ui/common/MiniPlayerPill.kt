@@ -31,15 +31,14 @@ fun MiniPlayerPill(
     showPlayer: Boolean,
     songTitle: String,
     artistName: String = stringResource(R.string.default_artist_name),
+    isPlaying: Boolean,
+    onPlayPauseClick: () -> Unit,
     onDismiss: () -> Unit,
     onPillClick: () -> Unit,
     onNext: () -> Unit = {},
     onPrevious: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
-    // Estado local de play/pause
-    var isPlaying by remember { mutableStateOf(true) }
-
     // Cor de destaque adaptada ao tema
     val accentColor = MaterialTheme.colorScheme.tertiary
 
@@ -58,42 +57,28 @@ fun MiniPlayerPill(
                     detectDragGestures { change, dragAmount ->
                         change.consume()
                         val (x, y) = dragAmount
-
                         if (abs(x) > abs(y)) {
-                            if (x > 30) onNext()
-                            else if (x < -30) onPrevious()
+                            if (x > 30) onNext() else if (x < -30) onPrevious()
                         } else {
-                            if (y > 30) onDismiss()
-                            else if (y < -30) onPillClick()
+                            if (y > 30) onDismiss() else if (y < -30) onPillClick()
                         }
                     }
                 }
                 // Tap simples abre o player completo
                 .clickable { onPillClick() },
-            color = MaterialTheme.colorScheme
-                .surfaceColorAtElevation(3.dp)
-                .copy(alpha = 0.9f),
+            color = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp).copy(alpha = 0.9f),
             shape = RoundedCornerShape(32.dp),
             shadowElevation = 8.dp,
-            border = BorderStroke(
-                0.5.dp,
-                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
-            )
+            border = BorderStroke(0.5.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
         ) {
             Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 12.dp),
+                modifier = Modifier.fillMaxSize().padding(horizontal = 12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 // Placeholder da capa / avatar do canal
                 Box(
-                    Modifier
-                        .size(44.dp)
-                        .clip(CircleShape)
-                        .background(
-                            MaterialTheme.colorScheme.secondaryContainer
-                        )
+                    Modifier.size(44.dp).clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.secondaryContainer)
                 )
 
                 Spacer(Modifier.width(12.dp))
@@ -122,18 +107,13 @@ fun MiniPlayerPill(
 
                 // Botão de play / pause
                 IconButton(
-                    onClick = { isPlaying = !isPlaying },
+                    onClick = onPlayPauseClick,
                     modifier = Modifier
                         .size(40.dp)
-                        .background(
-                            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.05f),
-                            CircleShape
-                        )
+                        .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.05f), CircleShape)
                 ) {
                     Icon(
-                        imageVector =
-                            if (isPlaying) Icons.Default.Pause
-                            else Icons.Default.PlayArrow,
+                        imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
                         contentDescription = stringResource(R.string.cd_play_pause),
                         tint = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.size(24.dp)

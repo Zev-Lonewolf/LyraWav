@@ -27,7 +27,6 @@ fun RecentCard(
     subtitle: String,
     onClick: () -> Unit
 ) {
-
     val isDark = isSystemInDarkTheme()
     val albumColor = if (isDark) {
         MaterialTheme.colorScheme.secondaryContainer
@@ -38,8 +37,8 @@ fun RecentCard(
     Column(
         modifier = Modifier
             .width(140.dp)
-            .clip(RoundedCornerShape(12.dp))
             .clickable { onClick() }
+            .padding(bottom = 4.dp)
     ) {
         Box(
             modifier = Modifier
@@ -55,11 +54,13 @@ fun RecentCard(
             style = MaterialTheme.typography.bodyMedium.copy(
                 fontFamily = Poppins,
                 fontWeight = FontWeight.Bold,
-                fontSize = 14.sp
+                fontSize = 14.sp,
+                lineHeight = 18.sp
             ),
             color = MaterialTheme.colorScheme.onSurface,
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.padding(horizontal = 2.dp)
         )
 
         Text(
@@ -67,11 +68,13 @@ fun RecentCard(
             style = MaterialTheme.typography.bodySmall.copy(
                 fontFamily = Poppins,
                 fontWeight = FontWeight.Medium,
-                fontSize = 12.sp
+                fontSize = 12.sp,
+                lineHeight = 16.sp
             ),
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.padding(horizontal = 2.dp)
         )
     }
 }
