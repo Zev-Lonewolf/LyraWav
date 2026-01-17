@@ -105,10 +105,17 @@ fun MiniPlayerPill(
                 .fillMaxWidth(pillWidth)
                 .height(pillHeight)
                 .pointerInput(isExpanded) {
-                    if (!isExpanded) {
-                        detectDragGestures { change, dragAmount ->
-                            change.consume()
-                            val (x, y) = dragAmount
+                    detectDragGestures { change, dragAmount ->
+                        change.consume()
+                        val (x, y) = dragAmount
+
+                        if (isExpanded) {
+                            // Quando expandido: arrastar para baixo minimiza
+                            if (y > 30) { // Limite para detectar arraste para baixo
+                                onPillClick() // Minimiza o player
+                            }
+                        } else {
+                            // Quando minimizado: gestos originais
                             when {
                                 abs(x) > abs(y) && x > 30 -> onNext()
                                 abs(x) > abs(y) && x < -30 -> onPrevious()
@@ -118,7 +125,10 @@ fun MiniPlayerPill(
                         }
                     }
                 }
-                .clickable { if (!isExpanded) onPillClick() },
+                .clickable {
+                    // Clique normal só funciona quando minimizado
+                    if (!isExpanded) onPillClick()
+                },
             color = MaterialTheme.colorScheme
                 .surfaceColorAtElevation(3.dp)
                 .copy(alpha = if (isExpanded) 1f else 0.95f),
@@ -190,7 +200,7 @@ fun MiniPlayerPill(
                     ) + scaleIn(
                         initialScale = 0.9f
                     ),
-                            exit = fadeOut(tween(200)),
+                    exit = fadeOut(tween(200)),
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
                         .padding(bottom = 80.dp)
