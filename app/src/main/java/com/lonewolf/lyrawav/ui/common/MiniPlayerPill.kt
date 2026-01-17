@@ -1,11 +1,7 @@
 package com.lonewolf.lyrawav.ui.common
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,9 +24,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lonewolf.lyrawav.R
+import com.lonewolf.lyrawav.ui.player.PlayerScreen
 import com.lonewolf.lyrawav.ui.theme.Poppins
 import kotlin.math.abs
 
@@ -52,69 +50,49 @@ fun MiniPlayerPill(
     val screenHeight = configuration.screenHeightDp.dp
     val screenWidth = configuration.screenWidthDp.dp
 
-    // Mola padrão para tudo se mover junto
-    val springSpec = spring<androidx.compose.ui.unit.Dp>(dampingRatio = 0.8f, stiffness = 300f)
+    // Spring base para sincronizar movimentos
+    val springSpec = spring<Dp>(dampingRatio = 0.8f, stiffness = 300f)
 
-    // Tamanho e Forma da Pílula Principal
-    val pillWidth by animateFloatAsState(if (isExpanded) 1f else 0.92f, label = "width")
+    // Dimensões da pílula
+    val pillWidth by animateFloatAsState(if (isExpanded) 1f else 0.92f, label = "pillWidth")
     val pillHeight by animateDpAsState(
         if (isExpanded) screenHeight else 64.dp,
         springSpec,
-        label = "height"
+        label = "pillHeight"
     )
-    val pillCorner by animateDpAsState(if (isExpanded) 0.dp else 32.dp, label = "corner")
+    val pillCorner by animateDpAsState(if (isExpanded) 0.dp else 32.dp, label = "pillCorner")
 
-    // CAPA DO ÁLBUM
-    val coverSize by animateDpAsState(
-        if (isExpanded) 300.dp else 44.dp,
-        springSpec,
-        label = "coverSize"
-    )
+    // Capa do álbum
+    val coverSize by animateDpAsState(if (isExpanded) 300.dp else 44.dp, springSpec, "coverSize")
     val coverRoundness by animateDpAsState(if (isExpanded) 16.dp else 22.dp, label = "coverRound")
-    // Posição X: No mini é 12dp (esquerda). No expandido é centralizado.
     val coverOffsetX by animateDpAsState(
-        targetValue = if (isExpanded) (screenWidth - 300.dp) / 2 else 12.dp,
-        animationSpec = springSpec, label = "coverX"
+        if (isExpanded) (screenWidth - 300.dp) / 2 else 12.dp,
+        springSpec,
+        "coverX"
     )
-    // Posição Y: No mini é centralizado verticalmente (10dp). No expandido desce para 100dp.
     val coverOffsetY by animateDpAsState(
-        targetValue = if (isExpanded) 100.dp else 10.dp,
-        animationSpec = springSpec, label = "coverY"
+        if (isExpanded) 100.dp else 10.dp,
+        springSpec,
+        "coverY"
     )
 
-    // Posição X: No mini fica depois da capa (68dp). No expandido fica quase na borda (32dp).
-    val textOffsetX by animateDpAsState(
-        targetValue = if (isExpanded) 32.dp else 68.dp,
-        animationSpec = springSpec, label = "textX"
-    )
-    // Posição Y: No mini alinhado ao topo relativo (12dp). No expandido vai para baixo da capa (420dp).
-    val textOffsetY by animateDpAsState(
-        targetValue = if (isExpanded) 430.dp else 12.dp,
-        animationSpec = springSpec, label = "textY"
-    )
-    // Tamanho da fonte do título
-    val titleFontSize by animateFloatAsState(if (isExpanded) 24f else 14f, label = "fontSize")
+    // Texto
+    val textOffsetX by animateDpAsState(if (isExpanded) 32.dp else 68.dp, springSpec, "textX")
+    val textOffsetY by animateDpAsState(if (isExpanded) 430.dp else 12.dp, springSpec, "textY")
+    val titleFontSize by animateFloatAsState(if (isExpanded) 24f else 14f, label = "titleSize")
 
-    // BOTÃO PLAY/PAUSE
-    val buttonSize by animateDpAsState(
-        if (isExpanded) 72.dp else 40.dp,
-        springSpec,
-        label = "btnSize"
-    )
-    val iconSize by animateDpAsState(
-        if (isExpanded) 32.dp else 24.dp,
-        springSpec,
-        label = "iconSize"
-    )
-    // Posição X: No mini fica na direita (Screen - margem). No expandido centraliza.
+    // Botão play/pause mini
+    val buttonSize by animateDpAsState(if (isExpanded) 72.dp else 40.dp, springSpec, "btnSize")
+    val iconSize by animateDpAsState(if (isExpanded) 32.dp else 24.dp, springSpec, "iconSize")
     val buttonOffsetX by animateDpAsState(
-        targetValue = if (isExpanded) (screenWidth - 72.dp) / 2 else (screenWidth * 0.92f) - 52.dp,
-        animationSpec = springSpec, label = "btnX"
+        if (isExpanded) (screenWidth - 72.dp) / 2 else (screenWidth * 0.92f) - 52.dp,
+        springSpec,
+        "btnX"
     )
-    // Posição Y: No mini 12dp. No expandido vai lá pro fundo.
     val buttonOffsetY by animateDpAsState(
-        targetValue = if (isExpanded) screenHeight - 150.dp else 12.dp,
-        animationSpec = springSpec, label = "btnY"
+        if (isExpanded) screenHeight - 150.dp else 12.dp,
+        springSpec,
+        "btnY"
     )
 
     Box(
@@ -130,16 +108,18 @@ fun MiniPlayerPill(
                         detectDragGestures { change, dragAmount ->
                             change.consume()
                             val (x, y) = dragAmount
-                            if (abs(x) > abs(y)) {
-                                if (x > 30) onNext() else if (x < -30) onPrevious()
-                            } else {
-                                if (y > 30) onDismiss() else if (y < -30) onPillClick()
+                            when {
+                                abs(x) > abs(y) && x > 30 -> onNext()
+                                abs(x) > abs(y) && x < -30 -> onPrevious()
+                                y > 30 -> onDismiss()
+                                y < -30 -> onPillClick()
                             }
                         }
                     }
                 }
                 .clickable { if (!isExpanded) onPillClick() },
-            color = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)
+            color = MaterialTheme.colorScheme
+                .surfaceColorAtElevation(3.dp)
                 .copy(alpha = if (isExpanded) 1f else 0.95f),
             shape = RoundedCornerShape(pillCorner),
             shadowElevation = if (isExpanded) 0.dp else 8.dp,
@@ -148,86 +128,106 @@ fun MiniPlayerPill(
                 MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
             )
         ) {
-            // Usamos um Box gigante para mover os elementos livremente com Offset
-            Box(modifier = Modifier.fillMaxSize()) {
+            Box(Modifier.fillMaxSize()) {
 
-                // BOTÃO DE MINIMIZAR
+                // Minimizar
                 AnimatedVisibility(
                     visible = isExpanded,
                     enter = fadeIn(),
                     exit = fadeOut(),
-                    modifier = Modifier.align(Alignment.TopStart)
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
                         .padding(top = 40.dp, start = 16.dp)
                 ) {
                     IconButton(onClick = onPillClick) {
-                        Icon(
-                            imageVector = Icons.Default.KeyboardArrowDown,
-                            contentDescription = "Minimizar",
-                            modifier = Modifier.size(32.dp),
-                            tint = MaterialTheme.colorScheme.onSurface
-                        )
+                        Icon(Icons.Default.KeyboardArrowDown, null, Modifier.size(32.dp))
                     }
                 }
 
-                // CAPA DO ÁLBUM
+                // Capa
                 Box(
                     modifier = Modifier
-                        .offset(x = coverOffsetX, y = coverOffsetY)
+                        .offset(coverOffsetX, coverOffsetY)
                         .size(coverSize)
                         .clip(RoundedCornerShape(coverRoundness))
                         .background(MaterialTheme.colorScheme.secondaryContainer)
                 )
 
-                // TEXTOS (Título e Artista)
+                // Título / Artista
                 Column(
                     modifier = Modifier
-                        .offset(x = textOffsetX, y = textOffsetY)
-                        .width(if (isExpanded) screenWidth - 64.dp else 200.dp), // Limita largura no modo expandido
+                        .offset(textOffsetX, textOffsetY)
+                        .width(if (isExpanded) screenWidth - 64.dp else 200.dp),
                     horizontalAlignment = if (isExpanded) Alignment.CenterHorizontally else Alignment.Start
                 ) {
                     Text(
-                        text = songTitle,
+                        songTitle,
                         color = MaterialTheme.colorScheme.onSurface,
-                        fontFamily = Poppins,
                         fontSize = titleFontSize.sp,
                         fontWeight = FontWeight.Bold,
+                        fontFamily = Poppins,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         textAlign = if (isExpanded) TextAlign.Center else TextAlign.Start,
                         modifier = Modifier.fillMaxWidth()
                     )
-
-                    val artistSize = if (isExpanded) 16.sp else 11.sp
                     Text(
-                        text = artistName,
+                        artistName,
+                        fontSize = if (isExpanded) 16.sp else 11.sp,
                         color = MaterialTheme.colorScheme.tertiary,
                         fontFamily = Poppins,
-                        fontSize = artistSize,
-                        fontWeight = FontWeight.SemiBold,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
                         textAlign = if (isExpanded) TextAlign.Center else TextAlign.Start,
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
 
-                // BOTÃO PLAY/PAUSE
-                IconButton(
-                    onClick = onPlayPauseClick,
+                // Player expandido
+                AnimatedVisibility(
+                    visible = isExpanded,
+                    enter = fadeIn(
+                        animationSpec = tween(400, delayMillis = 100)
+                    ) + scaleIn(
+                        initialScale = 0.9f
+                    ),
+                            exit = fadeOut(tween(200)),
                     modifier = Modifier
-                        .offset(x = buttonOffsetX, y = buttonOffsetY)
-                        .size(buttonSize)
-                        .background(
-                            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f),
-                            CircleShape
-                        )
+                        .align(Alignment.BottomCenter)
+                        .padding(bottom = 80.dp)
                 ) {
-                    Icon(
-                        imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
-                        contentDescription = stringResource(R.string.cd_play_pause),
-                        tint = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.size(iconSize)
+                    PlayerScreen(
+                        isPlaying = isPlaying,
+                        currentPosition = 0L,
+                        duration = 0L,
+                        onPlayPauseToggle = onPlayPauseClick,
+                        onNext = onNext,
+                        onPrevious = onPrevious,
+                        isVisible = isExpanded
                     )
+                }
+
+                // Botão mini
+                AnimatedVisibility(
+                    visible = !isExpanded,
+                    enter = fadeIn(),
+                    exit = fadeOut(tween(150)),
+                    modifier = Modifier.offset(buttonOffsetX, buttonOffsetY)
+                ) {
+                    IconButton(
+                        onClick = onPlayPauseClick,
+                        modifier = Modifier
+                            .size(buttonSize)
+                            .background(
+                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f),
+                                CircleShape
+                            )
+                    ) {
+                        Icon(
+                            if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
+                            contentDescription = stringResource(R.string.cd_play_pause),
+                            tint = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.size(iconSize)
+                        )
+                    }
                 }
             }
         }
