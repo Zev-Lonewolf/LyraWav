@@ -21,23 +21,26 @@ fun HomeScreen(
     initialSongTitle: String? = null,
     initialArtistName: String? = null
 ) {
+    // Estado do player - MANTIDO ENTRE MINIMIZAR/EXPANDIR
     var isPlaying by rememberSaveable { mutableStateOf(false) }
     var currentPosition by rememberSaveable { mutableLongStateOf(0L) }
-    val duration = 215000L
+    var duration by rememberSaveable { mutableLongStateOf(0L) } // Será preenchido pelo player real
 
-    // Player expandido
+    // Estado da UI
     var isMiniPlayerActive by rememberSaveable { mutableStateOf(initialSongTitle != null) }
     var currentSongTitle by rememberSaveable { mutableStateOf(initialSongTitle ?: "") }
     var currentArtistName by rememberSaveable { mutableStateOf(initialArtistName ?: "") }
     var isPlayerExpanded by rememberSaveable { mutableStateOf(false) }
 
-    // Simulação de progresso
-    LaunchedEffect(isPlaying) {
-        if (isPlaying) {
-            while (isPlaying) {
-                kotlinx.coroutines.delay(1000L)
-                if (currentPosition < duration) currentPosition += 1000L else isPlaying = false
-            }
+    // Função para mover o progresso livremente
+    val onSeek: (Float) -> Unit = { percentage ->
+        // Se não há duração definida, apenas atualiza a posição proporcionalmente
+        // Quando conectar ao player real, isso funcionará corretamente
+        currentPosition = if (duration > 0) {
+            (duration * percentage).toLong()
+        } else {
+            // Permite mover mesmo sem duração (útil para teste)
+            (100000L * percentage).toLong() // Valor temporário só para visualização
         }
     }
 
@@ -45,8 +48,8 @@ fun HomeScreen(
         currentSongTitle = title
         currentArtistName = artist
         isMiniPlayerActive = true
+        currentPosition = 0L // Reseta apenas ao clicar em nova música
         isPlaying = true
-        currentPosition = 0L
     }
 
     Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
@@ -93,9 +96,27 @@ fun HomeScreen(
                     songTitle = currentSongTitle,
                     artistName = currentArtistName,
                     isPlaying = isPlaying,
+                    currentPosition = currentPosition,
+                    duration = duration,
                     onPlayPauseClick = { isPlaying = !isPlaying },
-                    onDismiss = { isMiniPlayerActive = false },
-                    onPillClick = { isPlayerExpanded = !isPlayerExpanded },
+                    onDismiss = {
+                        isMiniPlayerActive = false
+                        isPlaying = false
+                        currentPosition = 0L
+                    },
+                    onPillClick = {
+                        isPlayerExpanded = !isPlayerExpanded
+                        // NÃO reseta o progresso, apenas alterna o estado
+                    },
+                    onNext = {
+                        // Próxima música
+                        currentPosition = 0L
+                    },
+                    onPrevious = {
+                        // Música anterior
+                        currentPosition = 0L
+                    },
+                    onSeek = onSeek,
                     modifier = Modifier
                         .then(
                             if (isPlayerExpanded) Modifier.fillMaxSize()

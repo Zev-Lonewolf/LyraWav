@@ -39,6 +39,8 @@ fun MiniPlayerPill(
     songTitle: String,
     artistName: String = stringResource(R.string.default_artist_name),
     isPlaying: Boolean,
+    currentPosition: Long,
+    duration: Long,
     onPlayPauseClick: () -> Unit,
     onDismiss: () -> Unit,
     onPillClick: () -> Unit,
@@ -64,21 +66,21 @@ fun MiniPlayerPill(
     val pillCorner by animateDpAsState(if (isExpanded) 0.dp else 32.dp, label = "pillCorner")
 
     // Capa do álbum
-    val coverSize by animateDpAsState(if (isExpanded) 300.dp else 44.dp, springSpec, "coverSize")
-    val coverRoundness by animateDpAsState(if (isExpanded) 16.dp else 22.dp, label = "coverRound")
+    val coverSize by animateDpAsState(if (isExpanded) 300.dp else 52.dp, springSpec, "coverSize")
+    val coverRoundness by animateDpAsState(if (isExpanded) 16.dp else 26.dp, label = "coverRound")
     val coverOffsetX by animateDpAsState(
         if (isExpanded) (screenWidth - 300.dp) / 2 else 12.dp,
         springSpec,
         "coverX"
     )
     val coverOffsetY by animateDpAsState(
-        if (isExpanded) 100.dp else 10.dp,
+        if (isExpanded) 100.dp else 6.dp,
         springSpec,
         "coverY"
     )
 
     // Texto
-    val textOffsetX by animateDpAsState(if (isExpanded) 32.dp else 68.dp, springSpec, "textX")
+    val textOffsetX by animateDpAsState(if (isExpanded) 32.dp else 76.dp, springSpec, "textX")
     val textOffsetY by animateDpAsState(if (isExpanded) 430.dp else 12.dp, springSpec, "textY")
     val titleFontSize by animateFloatAsState(if (isExpanded) 24f else 14f, label = "titleSize")
 
@@ -96,6 +98,14 @@ fun MiniPlayerPill(
         "btnY"
     )
 
+    // Calcular progresso (usa valor temporário se duration for 0)
+    val progress = if (duration > 0) {
+        currentPosition.toFloat() / duration.toFloat()
+    } else {
+        // Permite visualizar o progresso mesmo sem duração definida
+        currentPosition.toFloat() / 100000f
+    }
+
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.BottomCenter
@@ -110,12 +120,10 @@ fun MiniPlayerPill(
                         val (x, y) = dragAmount
 
                         if (isExpanded) {
-                            // Quando expandido: arrastar para baixo minimiza
-                            if (y > 30) { // Limite para detectar arraste para baixo
-                                onPillClick() // Minimiza o player
+                            if (y > 30) {
+                                onPillClick()
                             }
                         } else {
-                            // Quando minimizado: gestos originais
                             when {
                                 abs(x) > abs(y) && x > 30 -> onNext()
                                 abs(x) > abs(y) && x < -30 -> onPrevious()
@@ -126,7 +134,6 @@ fun MiniPlayerPill(
                     }
                 }
                 .clickable {
-                    // Clique normal só funciona quando minimizado
                     if (!isExpanded) onPillClick()
                 },
             color = MaterialTheme.colorScheme
@@ -140,6 +147,8 @@ fun MiniPlayerPill(
             )
         ) {
             Box(Modifier.fillMaxSize()) {
+
+                // Barra de progresso na parte inferior (REMOVIDA - agora está ao redor da capa)
 
                 // Minimizar
                 AnimatedVisibility(
@@ -155,14 +164,34 @@ fun MiniPlayerPill(
                     }
                 }
 
-                // Capa
+                // Capa com barra de progresso circular ao redor (apenas no mini player)
                 Box(
                     modifier = Modifier
                         .offset(coverOffsetX, coverOffsetY)
                         .size(coverSize)
-                        .clip(RoundedCornerShape(coverRoundness))
-                        .background(MaterialTheme.colorScheme.secondaryContainer)
-                )
+                ) {
+                    // Barra de progresso circular ao redor da capa (só visível quando minimizado)
+                    if (!isExpanded) {
+                        CircularProgressIndicator(
+                            progress = { progress.coerceIn(0f, 1f) },
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(2.dp),
+                            color = MaterialTheme.colorScheme.tertiary,
+                            strokeWidth = 2.5.dp,
+                            trackColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
+                        )
+                    }
+
+                    // Capa do álbum
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(if (!isExpanded) 6.dp else 0.dp)
+                            .clip(RoundedCornerShape(coverRoundness))
+                            .background(MaterialTheme.colorScheme.secondaryContainer)
+                    )
+                }
 
                 // Título / Artista
                 Column(
@@ -207,8 +236,8 @@ fun MiniPlayerPill(
                 ) {
                     PlayerScreen(
                         isPlaying = isPlaying,
-                        currentPosition = 0L,
-                        duration = 0L,
+                        currentPosition = currentPosition,
+                        duration = duration,
                         onPlayPauseToggle = onPlayPauseClick,
                         onNext = onNext,
                         onPrevious = onPrevious,
