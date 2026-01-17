@@ -44,6 +44,7 @@ fun MiniPlayerPill(
     onPillClick: () -> Unit,
     onNext: () -> Unit = {},
     onPrevious: () -> Unit = {},
+    onSeek: (Float) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val configuration = LocalConfiguration.current
@@ -201,6 +202,7 @@ fun MiniPlayerPill(
                         onPlayPauseToggle = onPlayPauseClick,
                         onNext = onNext,
                         onPrevious = onPrevious,
+                        onSeek = onSeek,
                         isVisible = isExpanded
                     )
                 }
