@@ -12,7 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.lonewolf.lyrawav.ui.common.FloatingNavBar
-import com.lonewolf.lyrawav.ui.common.MiniPlayerPill
+import com.lonewolf.lyrawav.ui.common.PlayerContainer
 import com.lonewolf.lyrawav.ui.home.components.*
 
 @Composable
@@ -53,7 +53,7 @@ fun HomeScreen(
                 enter = slideInVertically(initialOffsetY = { it }, animationSpec = spring(dampingRatio = 0.75f, stiffness = 200f)) + fadeIn(),
                 exit = slideOutVertically(targetOffsetY = { it }, animationSpec = spring(stiffness = 500f)) + fadeOut()
             ) {
-                MiniPlayerPill(
+                PlayerContainer(
                     isExpanded = isPlayerExpanded,
                     songTitle = currentSongTitle,
                     artistName = currentArtistName,
@@ -68,8 +68,8 @@ fun HomeScreen(
                         Modifier.fillMaxSize()
                     } else {
                         Modifier
+                            .padding(bottom = 72.dp)
                             .navigationBarsPadding()
-                            .padding(bottom = 92.dp)
                     }
                 )
             }
@@ -82,7 +82,7 @@ fun HomeScreen(
             ) {
                 Column(modifier = Modifier.navigationBarsPadding(), horizontalAlignment = Alignment.CenterHorizontally) {
                     FloatingNavBar()
-                    Spacer(modifier = Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
                 }
             }
         }
