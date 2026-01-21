@@ -105,20 +105,12 @@ fun PlayerControls(
                     scaleY = mainScale
                     rotationZ = rotation
                 }
-                .shadow(
-                    elevation = if (isMainPressed) 4.dp else 12.dp,
-                    shape = CircleShape
-                )
-                .background(
-                    color = colors.primaryContainer,
-                    shape = CircleShape
-                )
                 .clip(CircleShape)
                 .clickable(
                     interactionSource = mainInteraction,
                     indication = ripple(
                         bounded = true,
-                        color = colors.onPrimary
+                        color = colors.onBackground
                     ),
                     onClick = {
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -133,7 +125,7 @@ fun PlayerControls(
                 Icon(
                     imageVector = if (playing) Icons.Filled.Pause else Icons.Filled.PlayArrow,
                     contentDescription = null,
-                    tint = colors.onPrimaryContainer,
+                    tint = colors.onBackground,
                     modifier = Modifier.size(52.dp)
                 )
             }
