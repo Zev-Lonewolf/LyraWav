@@ -41,7 +41,7 @@ fun PlayerScreen(
     val progress = if (duration > 0)
         currentPosition.toFloat() / duration.toFloat()
     else
-        0f
+        currentPosition.toFloat() / 100000f
 
     val waveIntensity = 1f
 
@@ -87,7 +87,7 @@ fun PlayerScreen(
                 color = MaterialTheme.colorScheme.onSurface.copy(0.6f)
             )
             Text(
-                "-${formatTime((duration - currentPosition).coerceAtLeast(0))}",
+                "-${formatTime(if (duration > 0) duration - currentPosition else 0L)}",
                 fontSize = 12.sp,
                 color = MaterialTheme.colorScheme.onSurface.copy(0.6f)
             )
