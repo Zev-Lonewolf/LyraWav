@@ -3,7 +3,6 @@ package com.lonewolf.wavvy.ui.common
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
@@ -21,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import com.lonewolf.wavvy.ui.player.components.AlbumCover
 import com.lonewolf.wavvy.ui.player.components.ExpandedPlayerContent
-import com.lonewolf.wavvy.ui.player.components.MiniPlayerContent
+import com.lonewolf.wavvy.ui.player.components.PlayerControls
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -48,15 +47,15 @@ fun PlayerContainer(
 
     val containerAlpha = remember { Animatable(0f) }
     val offsetY = remember { Animatable(maxOffset + 150f) }
+    var isPlaying by remember { mutableStateOf(false) }
 
     val progress = (1f - (offsetY.value / maxOffset)).coerceIn(0f, 1f)
     LaunchedEffect(progress) { onProgressUpdate(progress) }
 
     val currentWidthFraction = lerpFloat(0.92f, 1f, progress)
     val currentCorner = lerp(32.dp, 0.dp, progress)
-    val currentHeight = lerp(64.dp, screenHeight + bottomMargin, progress)
+    val currentHeight = if (progress > 0.01f) screenHeight + bottomMargin else 64.dp
 
-    // Entrada com fade suave
     LaunchedEffect(Unit) {
         launch { containerAlpha.animateTo(1f, tween(500)) }
         launch { offsetY.animateTo(maxOffset, spring(0.82f, 350f)) }
@@ -67,11 +66,10 @@ fun PlayerContainer(
     }
 
     Box(
-        modifier = modifier
-            .alpha(containerAlpha.value),
+        modifier = modifier.alpha(containerAlpha.value),
         contentAlignment = Alignment.TopCenter
     ) {
-        Box(
+        Surface(
             modifier = Modifier
                 .offset { IntOffset(0, offsetY.value.roundToInt()) }
                 .fillMaxWidth(currentWidthFraction)
@@ -88,63 +86,77 @@ fun PlayerContainer(
                     onDragStopped = { velocity ->
                         scope.launch {
                             if (velocity > 600 && offsetY.value >= maxOffset) {
-                                launch { containerAlpha.animateTo(0f, tween(200)) }
-                                offsetY.animateTo(maxOffset + 300f, tween(300))
+                                containerAlpha.animateTo(0f, tween(200))
                                 onDismiss()
                             } else {
                                 val target = if (velocity < -700 || offsetY.value < maxOffset * 0.45f) 0f else maxOffset
                                 offsetY.animateTo(target, spring(0.85f, 400f))
-                                if (target == 0f && !isExpanded) onPillClick()
-                                else if (target == maxOffset && isExpanded) onPillClick()
+                                if ((target == 0f && !isExpanded) || (target == maxOffset && isExpanded)) {
+                                    onPillClick()
+                                }
                             }
                         }
                     }
-                )
-                .clickable(enabled = progress < 0.05f) { onPillClick() }
+                ),
+            color = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)
+                .copy(alpha = lerpFloat(0.7f, 1f, (progress * 1.2f).coerceIn(0f, 1f))),
+            shape = RoundedCornerShape(currentCorner),
+            shadowElevation = lerp(8.dp, 0.dp, progress),
+            onClick = { if (progress < 0.1f) onPillClick() }
         ) {
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-                color = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)
-                    .copy(alpha = lerpFloat(0.7f, 1f, (progress * 1.2f).coerceIn(0f, 1f))),
-                shape = RoundedCornerShape(currentCorner),
-                shadowElevation = lerp(8.dp, 0.dp, progress)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .then(
-                            if (progress > 0.5f) {
-                                // Quando expandido, aplica padding do sistema
-                                Modifier
-                                    .statusBarsPadding()
-                                    .navigationBarsPadding()
-                            } else {
-                                Modifier
-                            }
-                        )
-                ) {
-                    AlbumCover(progress = progress, screenWidth = screenWidth)
+            Box(modifier = Modifier.fillMaxSize()) {
+                // Capa do álbum
+                AlbumCover(progress = progress, screenWidth = screenWidth)
 
-                    Box(Modifier.alpha((1f - progress * 6f).coerceIn(0f, 1f))) {
-                        MiniPlayerContent(
-                            isExpanded = false,
-                            songTitle = songTitle,
-                            artistName = artistName,
-                            screenWidth = screenWidth,
-                            springSpec = spring()
-                        )
-                    }
-
-                    val expandedAlpha = ((progress - 0.4f) * 1.8f).coerceIn(0f, 1f)
-                    Box(Modifier.alpha(expandedAlpha)) {
-                        ExpandedPlayerContent(
-                            isExpanded = progress > 0.4f,
-                            songTitle = songTitle,
-                            artistName = artistName,
-                            onMinimize = onPillClick
-                        )
+                if (progress < 0.2f) {
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.CenterStart)
+                            .padding(start = 76.dp)
+                            .alpha(1f - progress * 5f)
+                    ) {
+                        Column {
+                            Text(
+                                text = songTitle,
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                                maxLines = 1,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                            Text(
+                                text = artistName,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.tertiary,
+                                maxLines = 1
+                            )
+                        }
                     }
                 }
+
+                // Conteúdo expandido
+                if (progress > 0.4f) {
+                    ExpandedPlayerContent(
+                        isExpanded = true,
+                        songTitle = songTitle,
+                        artistName = artistName,
+                        onMinimize = onPillClick,
+                        modifier = Modifier
+                            .statusBarsPadding()
+                            .navigationBarsPadding()
+                            .alpha(((progress - 0.4f) * 2f).coerceIn(0f, 1f))
+                    )
+                }
+
+                // Controles de player
+                PlayerControls(
+                    progress = progress,
+                    isPlaying = isPlaying,
+                    onPlayPauseToggle = { isPlaying = !isPlaying },
+                    onNext = { /* próximo */ },
+                    onPrevious = { /* anterior */ },
+                    screenWidth = screenWidth,
+                    screenHeight = screenHeight
+                )
             }
         }
     }
