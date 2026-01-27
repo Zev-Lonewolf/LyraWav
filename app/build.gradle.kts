@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.lonewolf.lyrawav"
+    namespace = "com.lonewolf.wavvy"
     compileSdk {
         version = release(36)
     }
