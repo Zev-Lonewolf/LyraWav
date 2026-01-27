@@ -30,9 +30,7 @@ fun ExpandedPlayerContent(
         exit = fadeOut(animationSpec = tween(250))
     ) {
         Box(
-            modifier = modifier
-                .fillMaxSize()
-                .systemBarsPadding()
+            modifier = modifier.fillMaxSize()
         ) {
             Column(
                 modifier = Modifier
@@ -40,19 +38,13 @@ fun ExpandedPlayerContent(
                     .padding(horizontal = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Toolbar (botão minimizar)
-                PlayerToolbar(onMinimize = onMinimize)
+                // Espaço para o toolbar
+                Spacer(modifier = Modifier.height(64.dp))
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                // Espaço para título e artista (abaixo da capa)
+                // Espaço para título e artista
                 Spacer(modifier = Modifier.height(320.dp))
-
-                // Aqui você vai adicionar:
-                // - Título e artista
-                // - Barra de progresso
-                // - Controles do player
-                // - Botões de ação
 
                 Box(
                     modifier = Modifier
@@ -67,6 +59,12 @@ fun ExpandedPlayerContent(
                     )
                 }
             }
+
+            // Toolbar fixo no topo
+            PlayerToolbar(
+                onMinimize = onMinimize,
+                modifier = Modifier.align(Alignment.TopStart)
+            )
         }
     }
 }
@@ -76,17 +74,22 @@ private fun PlayerToolbar(
     onMinimize: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Row(
+    Box(
         modifier = modifier
-            .fillMaxWidth()
-            .padding(top = 16.dp),
-        horizontalArrangement = Arrangement.Start
+            .statusBarsPadding()
+            .padding(start = 8.dp),
+        contentAlignment = Alignment.TopStart
     ) {
-        IconButton(onClick = onMinimize) {
+        IconButton(
+            onClick = onMinimize,
+            modifier = Modifier
+                .size(48.dp)
+                .offset(y = (-10).dp)
+        ) {
             Icon(
-                Icons.Default.KeyboardArrowDown,
+                imageVector = Icons.Default.KeyboardArrowDown,
                 contentDescription = "Minimizar",
-                modifier = Modifier.size(32.dp),
+                modifier = Modifier.size(28.dp),
                 tint = MaterialTheme.colorScheme.onSurface
             )
         }

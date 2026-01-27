@@ -1,7 +1,5 @@
 package com.lonewolf.lyrawav.ui.home
 
-import androidx.compose.animation.*
-import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,14 +9,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.lonewolf.lyrawav.ui.common.FloatingNavBar
 import com.lonewolf.lyrawav.ui.common.PlayerContainer
 import com.lonewolf.lyrawav.ui.home.components.*
 
 @Composable
-fun HomeScreen(
-    userName: String? = null
-) {
+fun HomeScreen(userName: String? = null) {
     var isMiniPlayerActive by rememberSaveable { mutableStateOf(false) }
     var isPlayerExpanded by rememberSaveable { mutableStateOf(false) }
     var currentSongTitle by rememberSaveable { mutableStateOf("") }
@@ -32,7 +29,6 @@ fun HomeScreen(
     }
 
     Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
-
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             item { HomeHeader(onNavigateToSettings = { }) }
             item { GreetingSection(userName = userName) }
@@ -47,44 +43,36 @@ fun HomeScreen(
             item { Spacer(modifier = Modifier.height(180.dp)) }
         }
 
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
-            AnimatedVisibility(
-                visible = isMiniPlayerActive && currentSongTitle.isNotEmpty(),
-                enter = slideInVertically(initialOffsetY = { it }, animationSpec = spring(dampingRatio = 0.75f, stiffness = 200f)) + fadeIn(),
-                exit = slideOutVertically(targetOffsetY = { it }, animationSpec = spring(stiffness = 500f)) + fadeOut()
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .zIndex(2f),
+            contentAlignment = Alignment.BottomCenter
+        ) {
+            Box(
+                modifier = Modifier
+                    .navigationBarsPadding()
+                    .padding(bottom = 20.dp)
             ) {
-                PlayerContainer(
-                    isExpanded = isPlayerExpanded,
-                    songTitle = currentSongTitle,
-                    artistName = currentArtistName,
-                    onPillClick = { isPlayerExpanded = !isPlayerExpanded },
-                    onDismiss = {
-                        isMiniPlayerActive = false
-                        isPlayerExpanded = false
-                    },
-                    onNext = { /* Próxima música */ },
-                    onPrevious = { /* Música anterior */ },
-                    modifier = if (isPlayerExpanded) {
-                        Modifier.fillMaxSize()
-                    } else {
-                        Modifier
-                            .padding(bottom = 72.dp)
-                            .navigationBarsPadding()
-                    }
-                )
+                FloatingNavBar()
             }
+        }
 
-            AnimatedVisibility(
-                visible = !isPlayerExpanded,
-                enter = fadeIn() + slideInVertically(initialOffsetY = { it }),
-                exit = fadeOut() + slideOutVertically(targetOffsetY = { it }),
-                modifier = Modifier.align(Alignment.BottomCenter)
-            ) {
-                Column(modifier = Modifier.navigationBarsPadding(), horizontalAlignment = Alignment.CenterHorizontally) {
-                    FloatingNavBar()
-                    Spacer(modifier = Modifier.height(4.dp))
-                }
-            }
+        if (isMiniPlayerActive && currentSongTitle.isNotEmpty()) {
+            PlayerContainer(
+                isExpanded = isPlayerExpanded,
+                songTitle = currentSongTitle,
+                artistName = currentArtistName,
+                onPillClick = { isPlayerExpanded = !isPlayerExpanded },
+                onDismiss = {
+                    isMiniPlayerActive = false
+                    isPlayerExpanded = false
+                },
+                onProgressUpdate = { },
+                modifier = Modifier
+                    .fillMaxSize()
+                    .zIndex(3f)
+            )
         }
     }
 }
