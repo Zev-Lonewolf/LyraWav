@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -45,9 +46,21 @@ fun PlayerContainer(
     val bottomMargin = 110.dp
     val maxOffset = with(density) { (screenHeight - 64.dp - bottomMargin).toPx() }
 
-    val containerAlpha = remember { Animatable(0f) }
-    val offsetY = remember { Animatable(maxOffset + 150f) }
-    var isPlaying by remember { mutableStateOf(false) }
+    // Salvar o estado da posição e alpha como Float
+    var savedOffsetY by rememberSaveable { mutableFloatStateOf(maxOffset + 150f) }
+    var savedAlpha by rememberSaveable { mutableFloatStateOf(0f) }
+    var isPlaying by rememberSaveable { mutableStateOf(false) }
+
+    // Flag para controlar se é a primeira composição
+    var isFirstComposition by rememberSaveable { mutableStateOf(true) }
+
+    // Criar os Animatables com os valores salvos
+    val containerAlpha = remember { Animatable(savedAlpha) }
+    val offsetY = remember { Animatable(savedOffsetY) }
+
+    // Atualizar os valores salvos quando mudarem
+    LaunchedEffect(containerAlpha.value) { savedAlpha = containerAlpha.value }
+    LaunchedEffect(offsetY.value) { savedOffsetY = offsetY.value }
 
     val progress = (1f - (offsetY.value / maxOffset)).coerceIn(0f, 1f)
     LaunchedEffect(progress) { onProgressUpdate(progress) }
@@ -56,13 +69,29 @@ fun PlayerContainer(
     val currentCorner = lerp(32.dp, 0.dp, progress)
     val currentHeight = if (progress > 0.01f) screenHeight + bottomMargin else 64.dp
 
+    // Animação inicial apenas na primeira composição
     LaunchedEffect(Unit) {
-        launch { containerAlpha.animateTo(1f, tween(500)) }
-        launch { offsetY.animateTo(maxOffset, spring(0.82f, 350f)) }
+        if (isFirstComposition) {
+            launch { containerAlpha.animateTo(1f, tween(500)) }
+            launch {
+                offsetY.animateTo(
+                    if (isExpanded) 0f else maxOffset,
+                    spring(0.82f, 350f)
+                )
+            }
+            isFirstComposition = false
+        } else {
+            // Se não é primeira composição (ex: mudança de tema), apenas ajusta instantaneamente
+            containerAlpha.snapTo(1f)
+            offsetY.snapTo(if (isExpanded) 0f else maxOffset)
+        }
     }
 
+    // Sincronizar com o estado isExpanded
     LaunchedEffect(isExpanded) {
-        offsetY.animateTo(if (isExpanded) 0f else maxOffset, spring(0.85f, 400f))
+        if (!isFirstComposition) {
+            offsetY.animateTo(if (isExpanded) 0f else maxOffset, spring(0.85f, 400f))
+        }
     }
 
     Box(

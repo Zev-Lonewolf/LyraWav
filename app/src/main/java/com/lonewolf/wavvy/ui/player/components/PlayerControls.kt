@@ -64,9 +64,11 @@ fun PlayerControls(
 
     Box(modifier = modifier.fillMaxSize()) {
 
-        // Skip buttons
-        val sideAlpha = ((progress - 0.7f) * 3.3f).coerceIn(0f, 1f)
-        if (sideAlpha > 0f) {
+        // Skip buttons com transição de fade suave
+        // Começa a aparecer a partir de progress 0.6 e fica totalmente visível em 0.85
+        val sideAlpha = ((progress - 0.6f) / 0.25f).coerceIn(0f, 1f)
+
+        if (progress > 0.55f) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -75,12 +77,28 @@ fun PlayerControls(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(onClick = onPrevious, modifier = Modifier.size(64.dp)) {
-                    Icon(Icons.Rounded.SkipPrevious, null, Modifier.size(40.dp))
+                IconButton(
+                    onClick = onPrevious,
+                    modifier = Modifier.size(64.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.SkipPrevious,
+                        contentDescription = "Anterior",
+                        tint = colors.onSurface,
+                        modifier = Modifier.size(40.dp)
+                    )
                 }
                 Spacer(modifier = Modifier.width(100.dp))
-                IconButton(onClick = onNext, modifier = Modifier.size(64.dp)) {
-                    Icon(Icons.Rounded.SkipNext, null, Modifier.size(40.dp))
+                IconButton(
+                    onClick = onNext,
+                    modifier = Modifier.size(64.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.SkipNext,
+                        contentDescription = "Próximo",
+                        tint = colors.onSurface,
+                        modifier = Modifier.size(40.dp)
+                    )
                 }
             }
         }
@@ -106,7 +124,7 @@ fun PlayerControls(
             AnimatedContent(targetState = isPlaying, label = "") { playing ->
                 Icon(
                     imageVector = if (playing) Icons.Filled.Pause else Icons.Filled.PlayArrow,
-                    contentDescription = null,
+                    contentDescription = if (playing) "Pausar" else "Play",
                     tint = if (progress > 0.5f) colors.onPrimary else colors.onSurface,
                     modifier = Modifier.size(currentIconSize)
                 )

@@ -33,8 +33,8 @@ fun HomeScreen(userName: String? = null) {
             item { HomeHeader(onNavigateToSettings = { }) }
             item { GreetingSection(userName = userName) }
             item { FilterPills() }
-            item { FastMusicGrid(onItemClick = { onMusicClick(it, "LyraWav") }) }
-            item { RecentSection(onItemClick = { onMusicClick(it, "Recent") }) }
+            item { FastMusicGrid(onItemClick = { onMusicClick(it, "Wavvy Artist") }) }
+            item { RecentSection(onItemClick = { onMusicClick(it, "Wavvy Artist") }) }
             item { PersonalizedSection(onItemClick = { }) }
             item { ArtistSection(onItemClick = { }) }
             item { GenreSection(onItemClick = { }) }
