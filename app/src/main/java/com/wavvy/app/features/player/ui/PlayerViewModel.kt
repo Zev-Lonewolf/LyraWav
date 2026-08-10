@@ -8,6 +8,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 // Coroutines state observation flows
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -16,6 +17,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
@@ -111,8 +113,16 @@ class PlayerViewModel(
     val currentQueue: StateFlow<List<QueueSong>> = _currentQueue.asStateFlow()
 
     // Playback modes state
-    private val _repeatMode = MutableStateFlow(0)
-    val repeatMode: StateFlow<Int> = _repeatMode.asStateFlow()
+    val repeatMode: StateFlow<Int> = playerManager.repeatMode.map { mode ->
+        when (mode) {
+            Player.REPEAT_MODE_ALL -> 1
+            Player.REPEAT_MODE_ONE -> 2
+            else -> 0
+        }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, 0)
+
+    private val _isShuffleActive = MutableStateFlow(false)
+    val isShuffleActive: StateFlow<Boolean> = _isShuffleActive.asStateFlow()
 
     // Timestamp of user tap (perf test)
     private var perfClickTimestamp: Long = 0L
@@ -168,6 +178,13 @@ class PlayerViewModel(
                         )
                     }
                 }
+        }
+
+        // Listen for notification shuffle commands
+        viewModelScope.launch {
+            MusicService.toggleShuffleEvents.collect {
+                toggleShuffleMode()
+            }
         }
 
         // Track playback start latency (perf test)
@@ -349,7 +366,11 @@ class PlayerViewModel(
     // Shuffle every track except the one currently playing, which keeps its spot
     fun shuffleQueue() {
         val current = _currentQueue.value
-        if (current.size <= 2) return
+        if (current.size <= 2) {
+            _isShuffleActive.value = true
+            playerManager.setShuffleMode(true)
+            return
+        }
 
         preShuffleOrder = current
 
@@ -361,12 +382,18 @@ class PlayerViewModel(
         val reordered = shuffledRest.toMutableList().apply {
             add(playingIndex.coerceIn(0, size), playingItem)
         }
+        _isShuffleActive.value = true
+        playerManager.setShuffleMode(true)
         applyQueueEdit(reordered)
     }
 
     // Restore the queue order captured right before the last shuffle
     fun unshuffleQueue() {
-        val original = preShuffleOrder ?: return
+        val original = preShuffleOrder ?: run {
+            _isShuffleActive.value = false
+            playerManager.setShuffleMode(false)
+            return
+        }
         val current = _currentQueue.value
         val currentIds = current.map { it.id }.toSet()
 
@@ -377,7 +404,25 @@ class PlayerViewModel(
         restored.addAll(current.filterNot { it.id in restoredIds })
 
         preShuffleOrder = null
+        _isShuffleActive.value = false
+        playerManager.setShuffleMode(false)
         applyQueueEdit(restored)
+    }
+
+    // Cycle through repeat modes (0 = off, 1 = all, 2 = one)
+    fun toggleRepeatMode() {
+        val nextMode = (repeatMode.value + 1) % 3
+        playerManager.setRepeatMode(nextMode)
+    }
+
+    // Toggle shuffle mode
+    fun toggleShuffleMode() {
+        val newState = !_isShuffleActive.value
+        if (newState) {
+            shuffleQueue()
+        } else {
+            unshuffleQueue()
+        }
     }
 
     // Fetch and append new tracks to make the playback queue infinite
@@ -568,13 +613,6 @@ class PlayerViewModel(
             }
             _isSeeking.value = false
         }
-    }
-
-    // Cycle through repeat modes (0 = off, 1 = all, 2 = one)
-    fun toggleRepeatMode() {
-        val nextMode = (_repeatMode.value + 1) % 3
-        _repeatMode.value = nextMode
-        playerManager.setRepeatMode(nextMode)
     }
 
     // Resolve track index dynamically from memory sequence map

@@ -1,10 +1,12 @@
 package com.wavvy.app.features.player.data.service
 
 // Android core
+import android.app.PendingIntent
 import android.content.Intent
 import android.os.Bundle
 import androidx.annotation.OptIn
 import androidx.core.net.toUri
+import com.wavvy.app.MainActivity
 // Media3
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
@@ -74,6 +76,9 @@ class MusicService : MediaSessionService() {
         // In-process signal replacing LocalBroadcastManager (deprecated)
         private val _loadMoreQueueEvents = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
         val loadMoreQueueEvents: SharedFlow<Unit> = _loadMoreQueueEvents.asSharedFlow()
+
+        private val _toggleShuffleEvents = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+        val toggleShuffleEvents: SharedFlow<Unit> = _toggleShuffleEvents.asSharedFlow()
     }
 
     override fun onCreate() {
@@ -158,8 +163,18 @@ class MusicService : MediaSessionService() {
 
         player = playerInstance
 
-        // Creating session with layout command buttons attached
+        // Intent to open MainActivity when user taps the notification
+        val sessionActivityIntent = Intent(this, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        }
+        val sessionActivityPendingIntent = PendingIntent.getActivity(
+            this, 0, sessionActivityIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        // Creating session with layout command buttons and activity intent attached
         mediaSession = MediaSession.Builder(this, playerInstance)
+            .setSessionActivity(sessionActivityPendingIntent)
             .setCallback(CustomMediaSessionCallback())
             .build()
 
@@ -182,9 +197,12 @@ class MusicService : MediaSessionService() {
                 }
 
                 if (playbackState == Player.STATE_ENDED) {
-                    val hasNext = playerInstance.hasNextMediaItem()
-                    if (hasNext) {
-                        playerInstance.seekToNextMediaItem()
+                    if (playerInstance.repeatMode == Player.REPEAT_MODE_ONE) {
+                        playerInstance.seekTo(0L)
+                        playerInstance.prepare()
+                        playerInstance.play()
+                    } else {
+                        playerInstance.seekToNext()
                         playerInstance.prepare()
                         playerInstance.play()
                     }
@@ -329,11 +347,9 @@ class MusicService : MediaSessionService() {
 
             // Force playback transition if player has already ended
             if (exoPlayer.playbackState == Player.STATE_ENDED) {
-                if (exoPlayer.hasNextMediaItem()) {
-                    exoPlayer.seekToNextMediaItem()
-                    exoPlayer.prepare()
-                    exoPlayer.play()
-                }
+                exoPlayer.seekToNext()
+                exoPlayer.prepare()
+                exoPlayer.play()
             }
             mediaSession?.let { updateNotificationLayout(it) }
             return
@@ -489,13 +505,13 @@ class MusicService : MediaSessionService() {
 
         // Use standard framework layout tokens for structural enforcement
         val previousButton = CommandButton.Builder(CommandButton.ICON_UNDEFINED)
-            .setPlayerCommand(Player.COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM)
+            .setPlayerCommand(Player.COMMAND_SEEK_TO_PREVIOUS)
             .setCustomIconResId(R.drawable.ic_previous)
             .setDisplayName("Previous")
             .build()
 
         val nextButton = CommandButton.Builder(CommandButton.ICON_UNDEFINED)
-            .setPlayerCommand(Player.COMMAND_SEEK_TO_NEXT_MEDIA_ITEM)
+            .setPlayerCommand(Player.COMMAND_SEEK_TO_NEXT)
             .setCustomIconResId(R.drawable.ic_next)
             .setDisplayName("Next")
             .build()
@@ -598,7 +614,9 @@ class MusicService : MediaSessionService() {
         ): ListenableFuture<SessionResult> {
             val playerInstance = session.player
             when (customCommand.customAction) {
-                "CUSTOM_COMMAND_SHUFFLE" -> playerInstance.shuffleModeEnabled = !playerInstance.shuffleModeEnabled
+                "CUSTOM_COMMAND_SHUFFLE" -> {
+                    _toggleShuffleEvents.tryEmit(Unit)
+                }
                 "CUSTOM_COMMAND_LIKE" -> {
                     isCurrentTrackLiked = !isCurrentTrackLiked
                     updateNotificationLayout(session)

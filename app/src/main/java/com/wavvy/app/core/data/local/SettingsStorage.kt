@@ -27,6 +27,7 @@ class SettingsStorage(context: Context) {
         const val KEY_KWORB_SCOPE = "pref_kworb_scope"
         const val KEY_KWORB_COUNTRY = "pref_kworb_country"
         const val KEY_KWORB_PERIOD = "pref_kworb_period"
+        const val KEY_PERSISTENT_MINIPLAYER = "pref_persistent_miniplayer"
     }
 
     // String operations
@@ -141,6 +142,15 @@ class SettingsStorage(context: Context) {
     // Queue limit retrieval
     fun getQueueLimit(defaultValue: Int = 100): Int {
         return getInt(KEY_QUEUE_LIMIT, defaultValue)
+    }
+
+    // Persistent miniplayer preference
+    fun savePersistentMiniplayer(enabled: Boolean) {
+        saveBoolean(KEY_PERSISTENT_MINIPLAYER, enabled)
+    }
+
+    fun isPersistentMiniplayer(defaultValue: Boolean = false): Boolean {
+        return getBoolean(KEY_PERSISTENT_MINIPLAYER, defaultValue)
     }
 
     // Raw preference structure exporter

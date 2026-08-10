@@ -178,11 +178,17 @@
     <string name="search_prefix_loading">Buscando por: </string>
     <string name="search_clear_all">Limpar tudo</string>
     <string name="search_placeholder_yt">Pesquisar no YouTube Music...</string>
+    <string name="search_see_all">Mais</string>
     <string name="search_category_all">Tudo</string>
+    <string name="search_category_artists">Artistas</string>
     <string name="search_category_songs">Músicas</string>
     <string name="search_category_videos">Vídeos</string>
+    <string name="search_category_community_playlists">Playlists da comunidade</string>
+    <string name="search_category_episodes">Episódios</string>
     <string name="search_category_albums">Álbuns</string>
-    <string name="search_category_artists">Artistas</string>
+    <string name="search_category_profiles">Perfis</string>
+    <string name="search_category_featured_playlists">Playlists em destaque</string>
+    <string name="search_category_podcasts">Podcasts</string>
 
     <string-array name="filter_moods">
         <item>Casa</item>
@@ -475,6 +481,8 @@
     <string name="setting_audio_fade_duration_default">Automático (12s)</string>
     <string name="setting_audio_normalization">Normalização de áudio</string>
     <string name="setting_audio_normalization_desc">Mantém o volume de reprodução constante entre faixas e álbuns diferentes</string>
+    <string name="setting_persistent_miniplayer">Miniplayer persistente</string>
+    <string name="setting_persistent_miniplayer_desc">Exibir o miniplayer ao abrir o aplicativo se houver uma música anterior, mesmo quando pausada</string>
 
     <string name="setting_subgroup_silence">Tratamento de Silêncio</string>
     <string name="setting_skip_silence">Pular silêncio</string>
@@ -709,4 +717,6 @@
         <item quantity="other">%1$d faixas</item>
     </plurals>
     <string name="error_share_empty">Não há nada para compartilhar aqui :)</string>
+    <string name="search_section_end">Fim</string>
+    <string name="search_no_suggestions">Hmm, nada encontrado… Será que tem um erro de digitação?</string>
 </resources>

@@ -52,6 +52,12 @@ class PlayerManager(private val context: Context) {
     private val _progress = MutableStateFlow(0f)
     val progress: StateFlow<Float> = _progress.asStateFlow()
 
+    private val _repeatMode = MutableStateFlow(Player.REPEAT_MODE_OFF)
+    val repeatMode: StateFlow<Int> = _repeatMode.asStateFlow()
+
+    private val _shuffleModeEnabled = MutableStateFlow(false)
+    val shuffleModeEnabled: StateFlow<Boolean> = _shuffleModeEnabled.asStateFlow()
+
     private var mediaController: MediaController? = null
 
     // Reference kept so the controller connection can be released on cleanup
@@ -122,12 +128,22 @@ class PlayerManager(private val context: Context) {
                     if (mediaController?.isPlaying == true) startProgressPolling()
                 }
             }
+
+            override fun onRepeatModeChanged(repeatMode: Int) {
+                _repeatMode.value = repeatMode
+            }
+
+            override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) {
+                _shuffleModeEnabled.value = shuffleModeEnabled
+            }
         })
 
         mediaController?.let {
             _isLoading.value = it.playbackState == Player.STATE_BUFFERING
             _isPlaying.value = it.isPlaying
             _currentMediaItem.value = it.currentMediaItem
+            _repeatMode.value = it.repeatMode
+            _shuffleModeEnabled.value = it.shuffleModeEnabled
             val ctrlDur = it.duration
             val extras = it.currentMediaItem?.mediaMetadata?.extras
             val backupDur = extras?.getLong("CUSTOM_METADATA_KEY_DURATION_MS", -1L) ?: -1L
@@ -176,11 +192,11 @@ class PlayerManager(private val context: Context) {
     }
 
     fun next() {
-        mediaController?.seekToNextMediaItem()
+        mediaController?.seekToNext()
     }
 
     fun previous() {
-        mediaController?.seekToPreviousMediaItem()
+        mediaController?.seekToPrevious()
     }
 
     fun seekTo(positionMs: Long) {
@@ -192,6 +208,18 @@ class PlayerManager(private val context: Context) {
             1 -> Player.REPEAT_MODE_ALL
             2 -> Player.REPEAT_MODE_ONE
             else -> Player.REPEAT_MODE_OFF
+        }
+    }
+
+    fun toggleShuffleMode() {
+        mediaController?.let {
+            it.shuffleModeEnabled = !it.shuffleModeEnabled
+        }
+    }
+
+    fun setShuffleMode(enabled: Boolean) {
+        mediaController?.let {
+            it.shuffleModeEnabled = enabled
         }
     }
 

@@ -44,7 +44,7 @@ import com.wavvy.app.core.designsystem.theme.accentCyan
 
 // Filter search categories
 enum class SearchCategory {
-    ALL, SONGS, VIDEOS, ALBUMS, ARTISTS
+    ALL, ARTISTS, SONGS, VIDEOS, COMMUNITY_PLAYLISTS, EPISODES, ALBUMS, PROFILES, FEATURED_PLAYLISTS, PODCASTS
 }
 
 // Category filter selector row
@@ -60,10 +60,15 @@ fun FilterChipsRow(
     val categories = remember {
         listOf(
             SearchCategory.ALL to R.string.search_category_all,
+            SearchCategory.ARTISTS to R.string.search_category_artists,
             SearchCategory.SONGS to R.string.search_category_songs,
             SearchCategory.VIDEOS to R.string.search_category_videos,
+            SearchCategory.COMMUNITY_PLAYLISTS to R.string.search_category_community_playlists,
+            SearchCategory.EPISODES to R.string.search_category_episodes,
             SearchCategory.ALBUMS to R.string.search_category_albums,
-            SearchCategory.ARTISTS to R.string.search_category_artists
+            SearchCategory.PROFILES to R.string.search_category_profiles,
+            SearchCategory.FEATURED_PLAYLISTS to R.string.search_category_featured_playlists,
+            SearchCategory.PODCASTS to R.string.search_category_podcasts
         )
     }
 

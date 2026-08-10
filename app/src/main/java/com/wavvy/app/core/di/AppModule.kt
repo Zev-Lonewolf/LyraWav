@@ -5,6 +5,7 @@ import com.wavvy.app.features.auth.ui.viewmodel.AuthViewModel
 import com.wavvy.app.features.home.ui.HomeViewModel
 import com.wavvy.app.features.player.ui.PlayerViewModel
 import com.wavvy.app.features.settings.ui.SettingsViewModel
+import com.wavvy.app.features.search.ui.SearchViewModel
 
 // Data layer and managers
 import com.wavvy.app.core.data.local.ChartResolutionCache
@@ -78,4 +79,6 @@ val appModule = module {
             authRepository = get()
         )
     }
+
+    viewModel { SearchViewModel() }
 }

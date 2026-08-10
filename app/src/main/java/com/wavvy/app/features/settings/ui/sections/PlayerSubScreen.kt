@@ -11,6 +11,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 // Material 3 icons
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.SmartDisplay
 import androidx.compose.material.icons.rounded.Wifi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -46,6 +47,11 @@ fun PlayerSubScreen(
         mutableStateOf(storage.getBoolean(SettingsStorage.KEY_DOWNLOAD_WIFI_ONLY, false))
     }
 
+    // Read persistent miniplayer preference
+    var persistentMiniplayer by remember {
+        mutableStateOf(storage.isPersistentMiniplayer(defaultValue = false))
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -62,6 +68,20 @@ fun PlayerSubScreen(
                 onCheckedChange = { newValue ->
                     wifiOnly = newValue
                     storage.saveBoolean(SettingsStorage.KEY_DOWNLOAD_WIFI_ONLY, newValue)
+                },
+                showDivider = false
+            )
+        }
+
+        SettingsGroupCard(title = stringResource(R.string.setting_subgroup_utility)) {
+            SettingsToggleRow(
+                title = stringResource(R.string.setting_persistent_miniplayer),
+                subtitle = stringResource(R.string.setting_persistent_miniplayer_desc),
+                icon = Icons.Rounded.SmartDisplay,
+                checked = persistentMiniplayer,
+                onCheckedChange = { newValue ->
+                    persistentMiniplayer = newValue
+                    storage.savePersistentMiniplayer(newValue)
                 },
                 showDivider = false
             )

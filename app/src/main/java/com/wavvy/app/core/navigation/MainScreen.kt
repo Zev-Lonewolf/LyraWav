@@ -35,11 +35,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import org.koin.androidx.compose.koinViewModel
+import com.wavvy.app.core.data.local.SettingsStorage
 // Core design system components
 import com.wavvy.app.core.designsystem.components.DockedNavBar
 import com.wavvy.app.core.designsystem.components.CustomToast
@@ -85,6 +87,9 @@ fun MainScreen(
 
     var activeToast by remember { mutableStateOf<ToastData?>(null) }
     val currentMediaItem by playerViewModel.currentMediaItem.collectAsState()
+    val isPlaying by playerViewModel.isPlaying.collectAsState()
+    val context = LocalContext.current
+    val settingsStorage = remember { SettingsStorage(context) }
 
     // Hide active keyboard on navigation changes and stop player on Auth screen transition
     LaunchedEffect(currentRoute) {
@@ -98,9 +103,16 @@ fun MainScreen(
     }
 
     // Sync playback system status
-    LaunchedEffect(currentMediaItem) {
+    LaunchedEffect(currentMediaItem, isPlaying) {
         if (currentMediaItem != null) {
-            playerState.isMiniPlayerActive = true
+            if (isPlaying) {
+                playerState.isMiniPlayerActive = true
+            } else {
+                val isPersistent = settingsStorage.isPersistentMiniplayer(defaultValue = false)
+                if (isPersistent) {
+                    playerState.isMiniPlayerActive = true
+                }
+            }
         }
     }
 
@@ -349,11 +361,16 @@ fun PlayerIntegration(
     showBorder: Boolean,
     modifier: Modifier = Modifier
 ) {
+    androidx.activity.compose.BackHandler(enabled = state.isPlayerExpanded) {
+        state.isPlayerExpanded = false
+    }
+
     if (state.isMiniPlayerActive) {
         PlayerSheet(
             isExpanded = state.isPlayerExpanded,
             imageUrl = state.currentImageUrl,
             songUrl = state.currentSongUrl,
+            playTrigger = state.playTrigger,
             initialTitle = state.currentSongTitle,
             initialArtist = state.currentArtistNames.joinToString(", "),
             onPillClick = { state.isPlayerExpanded = !state.isPlayerExpanded },

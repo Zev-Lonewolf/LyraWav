@@ -26,6 +26,7 @@ class PlayerState(
     var currentArtistNames by mutableStateOf(currentArtistNames)
     var currentImageUrl by mutableStateOf(currentImageUrl)
     var currentSongUrl by mutableStateOf(currentSongUrl)
+    var playTrigger by mutableStateOf(0L)
 
     // Update playback state
     fun updatePlayback(title: String, artists: List<String>, imageUrl: String? = null, url: String? = null, expand: Boolean = false) {
@@ -36,17 +37,7 @@ class PlayerState(
         isMiniPlayerActive = true
         isPlayerExpanded = expand
         isQueueActive = false
-    }
-
-    // Play all quick choices songs
-    fun playAllQuickChoices(artists: List<String>, mixTitle: String) {
-        currentSongTitle = mixTitle
-        currentArtistNames = artists
-        currentImageUrl = null
-        currentSongUrl = null
-        isMiniPlayerActive = true
-        isPlayerExpanded = false
-        isQueueActive = false
+        playTrigger = System.currentTimeMillis()
     }
 
     companion object {

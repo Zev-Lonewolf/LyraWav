@@ -10,6 +10,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -20,6 +22,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.rounded.NorthWest
 import androidx.compose.material3.*
 // State and UI
 import androidx.compose.runtime.*
@@ -31,6 +34,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
@@ -55,7 +59,8 @@ fun SearchBar(
     onBack: () -> Unit = {},
     isResultsVisible: Boolean = false,
     externalQuery: String = "",
-    onQueryChange: (String) -> Unit = {}
+    onQueryChange: (String) -> Unit = {},
+    onOpenSearchHome: () -> Unit = {}
 ) {
     // State for the query
     var textFieldValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
@@ -76,6 +81,7 @@ fun SearchBar(
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
@@ -85,11 +91,12 @@ fun SearchBar(
     val onPerformSearch = {
         if (textFieldValue.text.isNotBlank()) {
             val trimmedQuery = textFieldValue.text.trim()
+            keyboardController?.hide()
+            focusManager.clearFocus()
             scope.launch {
                 historyManager.saveSearch(trimmedQuery)
                 onSearch(trimmedQuery)
             }
-            focusManager.clearFocus()
         }
     }
 
@@ -97,7 +104,8 @@ fun SearchBar(
         modifier = Modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.background)
-            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Vertical))
+            .statusBarsPadding()
+            .displayCutoutPadding()
     ) {
         if (isLandscape) {
             Spacer(modifier = Modifier.height(20.dp))
@@ -108,12 +116,23 @@ fun SearchBar(
             onValueChange = {
                 textFieldValue = it
                 onQueryChange(it.text)
+                if (isResultsVisible) {
+                    onOpenSearchHome()
+                }
             },
             onSearchAction = onPerformSearch,
             onBackClick = onBack,
             onClearClick = {
                 textFieldValue = TextFieldValue("")
                 onQueryChange("")
+                if (isResultsVisible) {
+                    onOpenSearchHome()
+                }
+            },
+            onTextFieldClick = {
+                if (isResultsVisible) {
+                    onOpenSearchHome()
+                }
             }
         )
 
@@ -165,6 +184,13 @@ fun SearchBar(
                                     )
                                     onSearch(item)
                                 },
+                                onInsertClick = {
+                                    textFieldValue = TextFieldValue(
+                                        text = item,
+                                        selection = TextRange(item.length)
+                                    )
+                                    onQueryChange(item)
+                                },
                                 onRemove = { scope.launch { historyManager.removeItem(item) } }
                             )
                         }
@@ -182,9 +208,19 @@ private fun SearchTopBar(
     onValueChange: (TextFieldValue) -> Unit,
     onSearchAction: () -> Unit,
     onBackClick: () -> Unit,
-    onClearClick: () -> Unit
+    onClearClick: () -> Unit,
+    onTextFieldClick: () -> Unit = {}
 ) {
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
+    val interactionSource = remember { MutableInteractionSource() }
+
+    LaunchedEffect(interactionSource) {
+        interactionSource.interactions.collect { interaction ->
+            if (interaction is PressInteraction.Release) {
+                onTextFieldClick()
+            }
+        }
+    }
 
     Row(
         modifier = Modifier
@@ -203,10 +239,12 @@ private fun SearchTopBar(
         TextField(
             value = textFieldValue,
             onValueChange = onValueChange,
+            interactionSource = interactionSource,
             modifier = Modifier
                 .weight(1f)
                 .height(52.dp)
-                .clip(CircleShape),
+                .clip(CircleShape)
+                .clickable(interactionSource = interactionSource, indication = null) { onTextFieldClick() },
             placeholder = {
                 Text(
                     text = stringResource(R.string.search_placeholder_yt),
@@ -274,6 +312,7 @@ private fun SearchTopBar(
 private fun RecentSearchItem(
     text: String,
     onClick: () -> Unit,
+    onInsertClick: () -> Unit,
     onRemove: () -> Unit
 ) {
     Row(
@@ -300,6 +339,18 @@ private fun RecentSearchItem(
             fontSize = 15.sp,
             modifier = Modifier.weight(1f)
         )
+        // NorthWest arrow
+        IconButton(
+            onClick = onInsertClick,
+            modifier = Modifier.size(32.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Rounded.NorthWest,
+                contentDescription = "Inserir no campo",
+                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+                modifier = Modifier.size(16.dp)
+            )
+        }
         // Remove item button
         IconButton(
             onClick = onRemove,

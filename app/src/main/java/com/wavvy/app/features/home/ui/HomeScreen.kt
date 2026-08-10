@@ -38,6 +38,8 @@ import com.wavvy.app.features.home.ui.components.RadioOnlineCard
 import com.wavvy.app.features.home.ui.components.RecentSection
 import com.wavvy.app.features.home.ui.components.RecentTrack
 import com.wavvy.app.features.home.ui.components.SimilarDiscoverySection
+import com.wavvy.app.features.player.ui.PlayerViewModel
+import com.wavvy.app.features.player.ui.components.QueueSong
 
 // Main home screen layout
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,6 +51,7 @@ fun HomeScreen(
     userProfilePicture: String? = null,
     playerState: PlayerState,
     viewModel: HomeViewModel = koinViewModel(),
+    playerViewModel: PlayerViewModel = koinViewModel(),
     onNavigateToSettings: () -> Unit,
     onNavigateToLogin: () -> Unit
 ) {
@@ -181,10 +184,26 @@ fun HomeScreen(
                             )
                         },
                         onPlayAllClick = {
-                            playerState.playAllQuickChoices(
-                                artists = listOf(defaultArtist),
-                                mixTitle = "$defaultArtist $mixSuffix"
-                            )
+                            if (uiState.quickPicks.isNotEmpty()) {
+                                val allQuickSongs = uiState.quickPicks.map { pick ->
+                                    val cleanArtists = pick.artists.map { it.trim() }.filter { it.isNotBlank() }.ifEmpty { listOf(defaultArtist) }
+                                    QueueSong(
+                                        id = pick.videoId,
+                                        title = pick.title,
+                                        artist = cleanArtists.joinToString(", "),
+                                        imageUrl = pick.thumbnailUrl ?: ""
+                                    )
+                                }
+                                val first = allQuickSongs.first()
+                                playerState.updatePlayback(
+                                    title = first.title,
+                                    artists = listOf(first.artist),
+                                    imageUrl = first.imageUrl,
+                                    url = first.id,
+                                    expand = false
+                                )
+                                playerViewModel.loadAndPlayQueue(allQuickSongs, startIndex = 0)
+                            }
                         }
                     )
                 }

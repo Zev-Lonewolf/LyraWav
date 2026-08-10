@@ -84,6 +84,7 @@ fun PlayerSheet(
     isExpanded: Boolean,
     imageUrl: String?,
     songUrl: String?,
+    playTrigger: Long = 0L,
     initialTitle: String? = null,
     initialArtist: String? = null,
     onPillClick: () -> Unit,
@@ -110,14 +111,18 @@ fun PlayerSheet(
     val backendQueue by viewModel.currentQueue.collectAsState()
     val isPlaybackBusy by viewModel.isBusy.collectAsState()
 
-    LaunchedEffect(songUrl) {
-        if (!songUrl.isNullOrBlank() && songUrl != currentMediaItem?.mediaId) {
-            viewModel.loadAndPlay(
-                youtubeUrl = songUrl,
-                title = initialTitle.orEmpty(),
-                artist = initialArtist.orEmpty(),
-                imageUrl = imageUrl.orEmpty()
-            )
+    LaunchedEffect(playTrigger) {
+        if (playTrigger > 0L && !songUrl.isNullOrBlank()) {
+            val currentQueue = viewModel.currentQueue.value
+            val isAlreadyInQueue = currentQueue.isNotEmpty() && currentQueue.any { it.id == songUrl }
+            if (!isAlreadyInQueue) {
+                viewModel.loadAndPlay(
+                    youtubeUrl = songUrl,
+                    title = initialTitle.orEmpty(),
+                    artist = initialArtist.orEmpty(),
+                    imageUrl = imageUrl.orEmpty()
+                )
+            }
         }
     }
 
@@ -160,7 +165,7 @@ fun PlayerSheet(
         var isFirstComposition by rememberSaveable { mutableStateOf(true) }
 
         val repeatMode by viewModel.repeatMode.collectAsState()
-        var isShuffleActive by rememberSaveable { mutableStateOf(false) }
+        val isShuffleActive by viewModel.isShuffleActive.collectAsState()
 
         var isQueueLocked by rememberSaveable { mutableStateOf(false) }
 
@@ -370,16 +375,18 @@ fun PlayerSheet(
                         color = pillBorderColor,
                         shape = currentCornerShape
                     )
-                    .pointerInput(progress, maxOffset, playlist.size, currentIndex) {
-                        if (progress < 0.1f && !currentIsQueueActive) {
-                            detectDragGestures(
-                                onDrag = { change, dragAmount ->
+                    .pointerInput(Unit) {
+                        detectDragGestures(
+                            onDrag = { change, dragAmount ->
+                                if (progress < 0.1f && !currentIsQueueActive) {
                                     change.consume()
                                     scope.launch {
                                         offsetX.snapTo(offsetX.value + dragAmount.x)
                                     }
-                                },
-                                onDragEnd = {
+                                }
+                            },
+                            onDragEnd = {
+                                if (progress < 0.1f && !currentIsQueueActive) {
                                     scope.launch {
                                         val swipeThreshold = size.width * 0.2f
                                         val hasNext = playlist.size > 1 && currentIndex < playlist.size - 1
@@ -401,12 +408,14 @@ fun PlayerSheet(
                                             offsetX.animateTo(0f, spring())
                                         }
                                     }
-                                },
-                                onDragCancel = {
+                                }
+                            },
+                            onDragCancel = {
+                                if (progress < 0.1f) {
                                     scope.launch { offsetX.animateTo(0f, spring()) }
                                 }
-                            )
-                        }
+                            }
+                        )
                     }
                     .draggable(
                         orientation = Orientation.Vertical,
@@ -583,10 +592,7 @@ fun PlayerSheet(
                             repeatMode = repeatMode,
                             onRepeatClick = { viewModel.toggleRepeatMode() },
                             isShuffleActive = isShuffleActive,
-                            onShuffleClick = {
-                                isShuffleActive = !isShuffleActive
-                                if (isShuffleActive) viewModel.shuffleQueue() else viewModel.unshuffleQueue()
-                            },
+                            onShuffleClick = { viewModel.toggleShuffleMode() },
                             onMoreClick = {
                                 scope.launch {
                                     menuState.show()
@@ -628,10 +634,7 @@ fun PlayerSheet(
                             repeatMode = repeatMode,
                             onRepeatClick = { viewModel.toggleRepeatMode() },
                             isShuffleActive = isShuffleActive,
-                            onShuffleClick = {
-                                isShuffleActive = !isShuffleActive
-                                if (isShuffleActive) viewModel.shuffleQueue() else viewModel.unshuffleQueue()
-                            },
+                            onShuffleClick = { viewModel.toggleShuffleMode() },
                             onClose = {
                                 scope.launch {
                                     queueOffsetY.animateTo(maxQueueOffset, spring(Spring.DampingRatioNoBouncy, Spring.StiffnessMediumLow))
