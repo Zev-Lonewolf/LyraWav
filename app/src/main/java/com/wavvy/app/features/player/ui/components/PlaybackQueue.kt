@@ -381,7 +381,15 @@ fun PlaybackQueue(
                                                     },
                                                     onMoreClick = {
                                                         selectedSong = song
-                                                        menuState.show()
+                                                        menuState.showQueueItemOptions(
+                                                            com.wavvy.app.core.designsystem.bottomsheet.MenuSongData(
+                                                                id = song.id,
+                                                                title = song.title,
+                                                                artist = song.artist,
+                                                                imageUrl = song.imageUrl,
+                                                                durationSeconds = song.durationSeconds
+                                                            )
+                                                        )
                                                     }
                                                 )
                                             }

@@ -216,7 +216,14 @@ fun FastMusicGrid(
                         isLoading = isLoading,
                         onClick = { onItemClick(pick) },
                         onMenuAction = {
-                            menuState.show()
+                            menuState.showGenericSongOptions(
+                                com.wavvy.app.core.designsystem.bottomsheet.MenuSongData(
+                                    id = pick.videoId,
+                                    title = pick.title.orEmpty(),
+                                    artist = pick.artists?.joinToString(", ").orEmpty(),
+                                    imageUrl = pick.thumbnailUrl.orEmpty()
+                                )
+                            )
                         }
                     )
                 }

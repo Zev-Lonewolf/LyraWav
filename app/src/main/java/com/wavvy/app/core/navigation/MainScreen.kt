@@ -331,26 +331,89 @@ fun MainScreen(
             )
         }
 
-        // More options menu overlay
+        // More options bottom sheet menu (Metrolist architecture)
         val menuState = LocalMenuState.current
-        if (menuState.isVisible) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .zIndex(30f),
-                contentAlignment = Alignment.BottomCenter
-            ) {
-                PlayerMoreOptions(
-                    onDismiss = { menuState.dismiss() }
-                ) {
-                    PreviewBottomSheetContent(
-                        onOptionsClicked = { menuState.dismiss() }
-                    )
+        com.wavvy.app.core.designsystem.bottomsheet.BottomSheetMenu(
+            state = menuState
+        )
+
+        // Support for legacy targetType invocations
+        if (menuState.isVisible && menuState.songData != null) {
+            val currentSong = menuState.songData
+            when (menuState.targetType) {
+                com.wavvy.app.core.designsystem.bottomsheet.MenuTargetType.PLAYER_EXPANDED -> {
+                    menuState.content = {
+                        com.wavvy.app.features.player.ui.components.PlayerMoreOptionsSheet(
+                            title = currentSong?.title ?: stateTitle(playerState),
+                            artist = currentSong?.artist ?: stateArtist(playerState),
+                            album = currentSong?.album,
+                            videoId = currentSong?.id ?: playerState.currentSongUrl.orEmpty(),
+                            imageUrl = currentSong?.imageUrl ?: playerState.currentImageUrl,
+                            onDismiss = { menuState.dismiss() },
+                            onNavigateToSettings = {
+                                previousRoute = currentRoute
+                                currentRoute = NavRoutes.SETTINGS
+                            },
+                            onShowToast = { msg ->
+                                activeToast = ToastData(message = msg)
+                            }
+                        )
+                    }
+                }
+                com.wavvy.app.core.designsystem.bottomsheet.MenuTargetType.QUEUE_ITEM,
+                com.wavvy.app.core.designsystem.bottomsheet.MenuTargetType.GENERIC_SONG -> {
+                    val songId = currentSong?.id.orEmpty()
+                    val songTitle = currentSong?.title.orEmpty()
+                    val songArtist = currentSong?.artist.orEmpty()
+                    val songImg = currentSong?.imageUrl.orEmpty()
+                    val songDuration = currentSong?.durationSeconds ?: 0L
+
+                    menuState.content = {
+                        com.wavvy.app.features.player.ui.components.QueueMoreOptionsSheet(
+                            title = songTitle,
+                            artist = songArtist,
+                            album = currentSong?.album,
+                            videoId = songId,
+                            imageUrl = songImg,
+                            onDismiss = { menuState.dismiss() },
+                            onPlayNext = {
+                                playerViewModel.playNext(songId)
+                            },
+                            onAddToEnd = {
+                                playerViewModel.addToQueueEnd(
+                                    com.wavvy.app.features.player.ui.components.QueueSong(
+                                        id = songId,
+                                        title = songTitle,
+                                        artist = songArtist,
+                                        imageUrl = songImg,
+                                        durationSeconds = songDuration
+                                    )
+                                )
+                            },
+                            onRemoveFromQueue = {
+                                playerViewModel.removeFromQueue(songId)
+                            },
+                            onReloadMetadata = {
+                                playerViewModel.reloadMetadata(songId)
+                            },
+                            onNavigateToSettings = {
+                                previousRoute = currentRoute
+                                currentRoute = NavRoutes.SETTINGS
+                            },
+                            onShowToast = { msg ->
+                                activeToast = ToastData(message = msg)
+                            }
+                        )
+                    }
                 }
             }
         }
     }
 }
+
+// Helpers for reading player state title and artist safely
+private fun stateTitle(state: PlayerState): String = state.currentSongTitle.ifBlank { "" }
+private fun stateArtist(state: PlayerState): String = state.currentArtistNames.joinToString(", ")
 
 // Media player container wrapper component
 @Composable

@@ -363,6 +363,32 @@ class PlayerViewModel(
         applyQueueEdit(mutable)
     }
 
+    // Append a track to the end of the queue
+    fun addToQueueEnd(song: QueueSong) {
+        val current = _currentQueue.value
+        if (current.any { it.id == song.id }) return
+        val updated = current + song
+        applyQueueEdit(updated)
+    }
+
+    // Refresh metadata for a track from YT Music
+    fun reloadMetadata(songId: String) {
+        viewModelScope.launch {
+            try {
+                val upNext = ExtractorHelper.fetchUpNextQueue(getApplication(), songId)
+                val refreshed = upNext.find { it.id == songId }
+                if (refreshed != null) {
+                    val updated = _currentQueue.value.map {
+                        if (it.id == songId) refreshed else it
+                    }
+                    applyQueueEdit(updated)
+                }
+            } catch (_: Exception) {
+                // Ignore metadata reload failure
+            }
+        }
+    }
+
     // Shuffle every track except the one currently playing, which keeps its spot
     fun shuffleQueue() {
         val current = _currentQueue.value

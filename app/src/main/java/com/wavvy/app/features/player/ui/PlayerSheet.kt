@@ -504,7 +504,7 @@ fun PlayerSheet(
                             screenWidth = screenWidth,
                             songTitle = trackInfo.title,
                             cleanArtistName = trackInfo.cleanArtistName,
-                            songUrl = songUrl,
+                            songUrl = currentMediaItem?.mediaId ?: trackInfo.activeImageUrl,
                             isFavorite = isFavorite,
                             onFavoriteClick = { isFavorite = !isFavorite }
                         )
@@ -594,8 +594,20 @@ fun PlayerSheet(
                             isShuffleActive = isShuffleActive,
                             onShuffleClick = { viewModel.toggleShuffleMode() },
                             onMoreClick = {
+                                val currentMedia = currentMediaItem
+                                val trackId = currentMedia?.mediaId ?: songUrl.orEmpty()
+                                val title = currentTrackInfo?.title ?: initialTitle.orEmpty()
+                                val artist = currentTrackInfo?.artist ?: initialArtist.orEmpty()
+                                val img = currentTrackInfo?.imageUrl ?: imageUrl.orEmpty()
                                 scope.launch {
-                                    menuState.show()
+                                    menuState.showPlayerOptions(
+                                        com.wavvy.app.core.designsystem.bottomsheet.MenuSongData(
+                                            id = trackId,
+                                            title = title,
+                                            artist = artist,
+                                            imageUrl = img
+                                        )
+                                    )
                                 }
                             },
                             isLandscape = isLandscape,

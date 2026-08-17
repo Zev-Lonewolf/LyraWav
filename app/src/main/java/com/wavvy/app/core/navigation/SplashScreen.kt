@@ -61,18 +61,18 @@ fun SplashScreen(
         val offsetAnimation = remember { Animatable(centeredOffset, Dp.VectorConverter) }
         val dockedOffset = remember(maxHeight) { WordmarkLayoutSpec.dockedOffset(maxHeight) }
 
-        // Startup animation and auth check
+        // Fast startup animation and auth check
         LaunchedEffect(Unit) {
             val repository = AuthRepositoryImpl(context)
 
-            // Fade in animation
+            // Fast fade in animation
             alphaAnimation.animateTo(
                 targetValue = 1f,
-                animationSpec = tween(durationMillis = 500)
+                animationSpec = tween(durationMillis = 200)
             )
 
-            // Hold duration
-            delay(1500.milliseconds)
+            // Quick hold check
+            delay(200.milliseconds)
 
             val token = repository.getSessionToken()
             val settingsStorage = SettingsStorage(context)
@@ -87,13 +87,13 @@ fun SplashScreen(
                     launch {
                         offsetAnimation.animateTo(
                             targetValue = dockedOffset,
-                            animationSpec = tween(durationMillis = 600, easing = FastOutSlowInEasing)
+                            animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
                         )
                     }
                     launch {
                         fontSizeAnimation.animateTo(
                             targetValue = DOCKED_FONT_SIZE,
-                            animationSpec = tween(durationMillis = 600, easing = FastOutSlowInEasing)
+                            animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
                         )
                     }
                 }

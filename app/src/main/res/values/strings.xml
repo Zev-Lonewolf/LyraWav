@@ -719,4 +719,31 @@
     <string name="error_share_empty">Não há nada para compartilhar aqui :)</string>
     <string name="search_section_end">Fim</string>
     <string name="search_no_suggestions">Hmm, nada encontrado… Será que tem um erro de digitação?</string>
+
+    <!-- More Options Sheets Strings -->
+    <string name="more_opt_comments">Comentários</string>
+    <string name="more_opt_watch_clip">Ver Clipe</string>
+    <string name="more_opt_snippet">Prévia</string>
+    <string name="more_opt_info">Informações</string>
+    <string name="more_opt_share">Compartilhar</string>
+    <string name="more_opt_add_to_library">Adicionar à biblioteca</string>
+    <string name="more_opt_add_to_playlist">Adicionar à playlist</string>
+    <string name="more_opt_download">Baixar música</string>
+    <string name="more_opt_equalizer">Equalizador</string>
+    <string name="more_opt_timer">Temporizador</string>
+    <string name="more_opt_start_radio">Iniciar rádio normal</string>
+    <string name="more_opt_reload">Recarregar</string>
+    <string name="more_opt_reload_metadata">Atualizar os metadados do YT Music</string>
+    <string name="more_opt_play_next">Tocar em seguida</string>
+    <string name="more_opt_add_to_end">Adicionar ao fim</string>
+    <string name="more_opt_remove_from_queue">Remover da fila</string>
+    <string name="more_opt_view_artist">Ver artista</string>
+    <string name="more_opt_view_album">Ver álbum</string>
+    <string name="more_opt_no_album">Nenhum álbum vinculado</string>
+    <string name="more_opt_listen_together">Ouvir junto</string>
+    <string name="more_opt_cast">Transmitir</string>
+    <string name="more_opt_settings">Configurações</string>
+    <string name="more_opt_other_sources">Outras ações</string>
+    <string name="more_opt_share_song">Ouça %1$s de %2$s no Wavvy: %3$s</string>
 </resources>
+
